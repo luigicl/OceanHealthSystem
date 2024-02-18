@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro do Sistema</title>
     {% include 'includes/bootstrap.html' %}
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -115,7 +116,7 @@
 
         <div class="form-group">
             <label for="celular">Celular <span class="required-star">*</span></label>
-            <!--   Melhorar essa REGEX tentei "^\([1-9]{2}\)(?:[2-8]|9[0-9])[0-9]{3}\-[0-9]{4}$" e "\(?(\d{3})\)?[-\.\s]?(\d{3})[-\.\s]?(\d{4})"         -->
+            <!--   Melhorar essa REGEX tentei "^\([1-9]{2}\)(?:[2-8]|9[0-9])[0-9]{3}\-[0-9]{4}$" e "\(?(\d{3})\)?[-\.\s]?(\d{3})[-\.\s]?(\d{4})"    -->
             <input type="tel" id="celular" name="celular" pattern="\d{11}" placeholder="Digite somente os números e com DDD" required>
         </div>
 
