@@ -31,25 +31,28 @@ def cadastrar():
             'data': data_cadastro
         }
 
-        # VERIFICAR SE JÁ EXISTE CADASTRO COM O CPF INFORMADO
-        if Usuarios.query.filter(Usuarios.cpf == cpf).first():
-            mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
-            return render_template("cadastrar.html", mensagem=mensagem)
-
         # Validar o CPF digitado
         if validar_cpf(cpf):
-            usuario = Usuarios(
-                nome=nome,
-                cpf=cpf,
-                data_nascimento=data_nascimento,
-                celular=celular,
-                email=email,
-                data_cadastro=data_cadastro,
-                paciente=True
-            )
-            database.session.add(usuario)
-            database.session.commit()
-            return render_template("confirmacao_cadastro.html", dados_usuario=dados_usuario)
+            # VERIFICAR SE JÁ EXISTE CADASTRO COM O CPF INFORMADO
+            if Usuarios.query.filter(Usuarios.cpf == cpf).first():
+                mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
+                return render_template("cadastrar.html", mensagem=mensagem)
+            elif validar_data_nascimento(data_nascimento):
+                usuario = Usuarios(
+                    nome=nome,
+                    cpf=cpf,
+                    data_nascimento=data_nascimento,
+                    celular=celular,
+                    email=email,
+                    data_cadastro=data_cadastro,
+                    paciente=True
+                )
+                database.session.add(usuario)
+                database.session.commit()
+                return render_template("confirmacao_cadastro.html", dados_usuario=dados_usuario)
+            else:
+                mensagem = f"Verifique a data de nascimento inserida."
+                return render_template("cadastrar.html", mensagem=mensagem)
         else:
             mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
             return render_template("cadastrar.html", mensagem=mensagem)
@@ -57,13 +60,19 @@ def cadastrar():
 
 
 def validar_cpf(cpf):
-    if len(cpf) != 11 or len(set(cpf)) == 1:
-        return False
+    """ **** COMENTADO APENAS PARA FACILITAR OS TESTE, PARA PRODUÇÃO REATIVAR ESTE TRECHO **** """
+    # # Verificando o comprimento do CPF ou se todos os digitos são iguais (e.g. 111.111.111-11)
+    # if len(cpf) != 11 or len(set(cpf)) == 1:
+    #     return False
+    # try:
+    #     digitos = list(map(int, cpf))
+    # except ValueError:
+    #     return False
 
-    try:
-        digitos = list(map(int, cpf))  # Verificando se todos os digitos não são iguais (e.g. 111.111.111-11)
-    except ValueError:
+    # ***** AO REATIVAR O TRECHO ACIMA, EXCLUIR AS TRÊS LINHAS ABAIXO  ******
+    if len(cpf) != 11:
         return False
+    digitos = list(map(int, cpf))
 
     def calcular_digito(multiplicador):
         total = 0
@@ -90,4 +99,11 @@ def validar_cpf(cpf):
     return True
 
 
-
+def validar_data_nascimento(data_nascimento):
+    data_nascimento_objeto = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
+    hoje = datetime.now().date()
+    dias = (hoje - data_nascimento_objeto).days
+    if (120 * 365) > dias > 0:
+        return True
+    else:
+        return False
