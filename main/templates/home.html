@@ -1,10 +1,132 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo</title>
+    {% include 'includes/bootstrap.html' %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Plano de fundo leve */
+        }
+        .welcome-text {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .option-text {
+            margin-bottom: 30px;
+            font-size: 18px;
+        }
+        .button-home {
+            border: none;
+            outline: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .first-access {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+        }
+        .login {
+            background-image: linear-gradient(to right, #ff512f 0%, #dd2476 100%);
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+    </style>
 </head>
 <body>
-<h1>OLÁ MUNDO DOIDO</h1>
+    <div class="welcome-text">
+        <h1>Bem-vindo ao sistema OHS</h1>
+        <p class="option-text">Selecione uma opção</p>
+    </div>
+    <button type="button" class="button-home first-access" data-bs-toggle="modal" data-bs-target="#modal_conf_ubs">Primeiro acesso?</button>
+    <button class="button-home login">Já possui cadastro? Faça o login</button>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .content {
+            text-align: center; /* Centraliza o conteúdo */
+        }
+        .question {
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #333;
+            padding: 0 20px; /* Garante que o texto se ajuste bem em telas menores */
+        }
+        .buttons {
+            display: flex;
+            justify-content: center; /* Centraliza os botões horizontalmente */
+            gap: 20px; /* Espaço entre os botões */
+        }
+        .button {
+            border: none;
+            outline: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            transition: opacity 0.3s ease;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+    </style>
+    <!-- Modal de confirmação pré-cadastro na UBS-->
+    <div class="modal fade" id="modal_conf_ubs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Atenção</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="question">Possui o cadastro na UBS?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn button-home login" data-bs-toggle="modal" data-bs-target="#modal_msg_ubs">Não</button>
+              <a href="{{ url_for('cadastrar') }}">
+                  <button type="button" class="btn button-home first-access">Sim</button>
+              </a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Modal de msg para realizar pré-cadastro-->
+    <div class="modal fade" id="modal_msg_ubs"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            Dirija-se a um centro de Saúde para realizar seu pré-cadastro
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 </body>
 </html>
