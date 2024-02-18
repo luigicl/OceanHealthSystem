@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro do Sistema</title>
+    {% include 'includes/bootstrap.html' %}
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -59,16 +60,37 @@
             margin-left: 10px; /* Espaçamento entre os botões */
         }
         .submit-button {
-            background-color: #2575fc;
+            background-image: linear-gradient(to left, #6a11cb 0%, #2575fc 100%);
             color: white;
         }
         .cancel-button {
-            background-color: #ccc;
-            color: #333;
+            background-image: linear-gradient(to left, #ff512f 0%, #dd2476 100%);
+            color: white;
         }
         .required-star {
             color: red;
         }
+
+
+        .first-access {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+        }
+        .first-access:hover {
+            background-image: linear-gradient(to left, #6a11cb 0%, #2575fc 100%);
+            color: white;
+        }
+        .login {
+            background-image: linear-gradient(to right, #ff512f 0%, #dd2476 100%);
+        }
+        .login:hover {
+            background-image: linear-gradient(to left, #ff512f 0%, #dd2476 100%);
+            color: white;
+        }
+        .button:hover {
+            opacity: 0.8;
+        }
+
+
     </style>
 </head>
 <body>
@@ -94,7 +116,7 @@
         <div class="form-group">
             <label for="celular">Celular <span class="required-star">*</span></label>
             <!--   Melhorar essa REGEX tentei "^\([1-9]{2}\)(?:[2-8]|9[0-9])[0-9]{3}\-[0-9]{4}$" e "\(?(\d{3})\)?[-\.\s]?(\d{3})[-\.\s]?(\d{4})"         -->
-            <input type="tel" id="celular" name="celular" pattern="\d{11}" placeholder="Digite seu número de celular" required>
+            <input type="tel" id="celular" name="celular" pattern="\d{11}" placeholder="Digite somente os números e com DDD" required>
         </div>
 
         <div class="form-group">

@@ -37,12 +37,17 @@
         }
         .first-access {
             background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+            color: white;
         }
+
         .login {
             background-image: linear-gradient(to right, #ff512f 0%, #dd2476 100%);
+            color: white;
         }
+
         .button:hover {
             opacity: 0.8;
+            color: white;
         }
     </style>
 </head>
@@ -51,47 +56,9 @@
         <h1>Bem-vindo ao sistema OHS</h1>
         <p class="option-text">Selecione uma opção</p>
     </div>
-    <button type="button" class="button-home first-access" data-bs-toggle="modal" data-bs-target="#modal_conf_ubs">Primeiro acesso?</button>
-    <button class="button-home login">Já possui cadastro? Faça o login</button>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-        }
-        .content {
-            text-align: center; /* Centraliza o conteúdo */
-        }
-        .question {
-            margin-bottom: 30px;
-            font-size: 24px;
-            color: #333;
-            padding: 0 20px; /* Garante que o texto se ajuste bem em telas menores */
-        }
-        .buttons {
-            display: flex;
-            justify-content: center; /* Centraliza os botões horizontalmente */
-            gap: 20px; /* Espaço entre os botões */
-        }
-        .button {
-            border: none;
-            outline: none;
-            padding: 10px 20px;
-            border-radius: 20px;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
-            transition: opacity 0.3s ease;
-        }
-        .button:hover {
-            opacity: 0.8;
-        }
+    <button type="button" class="button button-home first-access" data-bs-toggle="modal" data-bs-target="#modal_conf_ubs">Primeiro acesso?</button>
+    <button class="button button-home login">Já possui cadastro? Faça o login</button>
+
     </style>
     <!-- Modal de confirmação pré-cadastro na UBS-->
     <div class="modal fade" id="modal_conf_ubs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -105,9 +72,9 @@
             <p class="question">Possui o cadastro na UBS?</p>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn button-home login" data-bs-toggle="modal" data-bs-target="#modal_msg_ubs">Não</button>
+            <button type="button" class="btn button button-home login" data-bs-toggle="modal" data-bs-target="#modal_msg_ubs">Não</button>
               <a href="{{ url_for('cadastrar') }}">
-                  <button type="button" class="btn button-home first-access">Sim</button>
+                  <button type="button" class="btn button button-home first-access">Sim</button>
               </a>
           </div>
         </div>
@@ -123,7 +90,7 @@
 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            <button type="button" class="btn button button-home first-access" data-bs-dismiss="modal">Fechar</button>
           </div>
         </div>
       </div>
