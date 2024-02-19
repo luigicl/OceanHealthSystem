@@ -90,4 +90,7 @@ def validar_cpf(cpf):
     return True
 
 
-
+@app.route('/menu')
+def menu_principal():
+    
+    return render_template("menu.html")
