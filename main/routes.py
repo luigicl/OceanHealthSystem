@@ -112,3 +112,7 @@ def validar_data_nascimento(data_nascimento):
 def menu_principal():
     
     return render_template("menu.html")
+
+@app.route('/consulta')
+def consulta():
+    return render_template("agendamento_consulta.html")

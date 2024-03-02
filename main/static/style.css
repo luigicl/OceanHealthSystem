@@ -114,3 +114,91 @@ header{
     text-align: center;
 }
 /* Fim CSS do arquivo menu.html */
+
+/* Arquivo agendamento_consulta.html */
+
+.informations{ 
+    width: 70%;
+    margin-top: 3rem;
+    display: flex;
+    gap: 4rem;
+    justify-content: center;
+}
+
+
+.calendar input{
+    background-color: #599dc6;
+    padding: 15px;
+    font-family: "Roboto Mono",monospace;
+    color: #ffffff;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+}
+
+.hours_enables{
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    justify-content: start;
+    gap: 1rem;
+    width: 300px;
+}
+
+.subtitle {
+    color: #fff;
+    margin: 10px 0px;
+    font-weight: 500;
+}
+
+.times{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: start;
+    align-items: center;
+}
+
+.time_hours{
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #599dc6;
+    color: #fff;
+    cursor: pointer;
+}
+
+.obs textarea {
+    margin-top: 10px;
+    padding: 10px;
+}
+
+.btn_actions{
+    position: relative;
+    top: 93%;
+    margin-left: 2rem;
+}
+
+.btn_actions #accept{
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #fff;
+    color: #245567;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+}
+
+.btn_actions #cancel{
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #597ab0;
+    color: #FFF;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+}
