@@ -147,6 +147,11 @@ def menu_principal():
     return render_template("menu.html")
 
 
+@app.route('/consulta')
+def consulta():
+    return render_template("agendamento_consulta.html")
+
+
 # TESTE
 @app.route('/gerar_encaminhamento', methods=['GET', 'POST'])
 def teste_gerar_encaminhamento():
