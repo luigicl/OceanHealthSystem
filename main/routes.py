@@ -1,8 +1,8 @@
 from datetime import datetime
-from main import database
-from main.models import Usuarios
-from flask import Flask, render_template, request
-from main import app
+from main import db, app
+from main.models import *
+from main.forms import ConsultaForm
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 
 @app.route("/")
@@ -31,31 +31,31 @@ def cadastrar():
             'data': data_cadastro
         }
 
-        # Validar o CPF digitado
-        if validar_cpf(cpf):
-            # VERIFICAR SE JÁ EXISTE CADASTRO COM O CPF INFORMADO
-            if Usuarios.query.filter(Usuarios.cpf == cpf).first():
-                mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
-                return render_template("cadastrar.html", mensagem=mensagem)
-            elif validar_data_nascimento(data_nascimento):
-                usuario = Usuarios(
-                    nome=nome,
-                    cpf=cpf,
-                    data_nascimento=data_nascimento,
-                    celular=celular,
-                    email=email,
-                    data_cadastro=data_cadastro,
-                    paciente=True
-                )
-                database.session.add(usuario)
-                database.session.commit()
-                return render_template("confirmacao_cadastro.html", dados_usuario=dados_usuario)
-            else:
-                mensagem = f"Verifique a data de nascimento inserida."
-                return render_template("cadastrar.html", mensagem=mensagem)
-        else:
-            mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
-            return render_template("cadastrar.html", mensagem=mensagem)
+        # Validar o CPF digitado - ******* REVISAR, POIS O MODELS FOI ALTERADO ********
+        # if validar_cpf(cpf):
+        #     # VERIFICAR SE JÁ EXISTE CADASTRO COM O CPF INFORMADO
+        #     if Usuarios.query.filter(Usuarios.cpf == cpf).first():
+        #         mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
+        #         return render_template("cadastrar.html", mensagem=mensagem)
+        #     elif validar_data_nascimento(data_nascimento):
+        #         usuario = Usuarios(
+        #             nome=nome,
+        #             cpf=cpf,
+        #             data_nascimento=data_nascimento,
+        #             celular=celular,
+        #             email=email,
+        #             data_cadastro=data_cadastro,
+        #             paciente=True
+        #         )
+        #         db.session.add(usuario)
+        #         db.session.commit()
+        #         return render_template("confirmacao_cadastro.html", dados_usuario=dados_usuario)
+        #     else:
+        #         mensagem = f"Verifique a data de nascimento inserida."
+        #         return render_template("cadastrar.html", mensagem=mensagem)
+        # else:
+        #     mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
+        #     return render_template("cadastrar.html", mensagem=mensagem)
     return render_template("cadastrar.html")
 
 
@@ -98,6 +98,7 @@ def validar_cpf(cpf):
 
     return True
 
+
 def validar_data_nascimento(data_nascimento):
     data_nascimento_objeto = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
     hoje = datetime.now().date()
@@ -106,9 +107,103 @@ def validar_data_nascimento(data_nascimento):
         return True
     else:
         return False
-    
+
+
+# TESTE CALENDÁRIO
+@app.route('/agendar', methods=['GET', 'POST'])
+def agendar():
+    form = ConsultaForm()
+    if form.validate_on_submit():
+        nova_consulta = Consulta(titulo=form.titulo.data, inicio=form.inicio.data, fim=form.fim.data, url=form.url.data)
+        db.session.add(nova_consulta)
+        db.session.commit()
+        return redirect(url_for('calendario'))
+    return render_template('agendar.html', form=form)
+
+
+# TESTE CALENDÁRIO
+@app.route('/api/eventos')
+def eventos():
+    consultas = Consulta.query.all()
+    eventos = []
+    for consulta in consultas:
+        eventos.append({
+            "title": consulta.titulo,
+            "start": consulta.inicio.strftime("%Y-%m-%dT%H:%M:%S"),
+            "end": consulta.fim.strftime("%Y-%m-%dT%H:%M:%S"),
+            "url": consulta.url
+        })
+    return jsonify(eventos)
+
+
+# TESTE CALENDÁRIO
+@app.route('/calendario')
+def calendario():
+    return render_template('calendario.html')
+
 
 @app.route('/menu')
 def menu_principal():
-    
     return render_template("menu.html")
+
+
+# TESTE
+@app.route('/gerar_encaminhamento', methods=['GET', 'POST'])
+def teste_gerar_encaminhamento():
+    exames = TipoExame.query.all()
+    medicos = Medico.query.all()
+    pacientes = Paciente.query.order_by(Paciente.nomeCompleto).all()
+    if request.method == 'POST':
+        tipo_encaminhamento = request.form.get('rb_tipo_encaminhamento')
+        exame = request.form.get('input_tipo_exame')
+        medico = request.form.get('input_especialidade')
+        paciente = request.form.get('input_paciente')
+        encaminhamento = Encaminhamento(
+                                        id_tipo_encaminhamento=tipo_encaminhamento,
+                                        id_paciente=paciente,
+                                        id_medico=medico,
+                                        id_exame=exame
+                                        )
+        db.session.add(encaminhamento)
+        db.session.commit()
+        if tipo_encaminhamento == "1":
+            encaminhamento_gerado = {
+                                    "tipo": TipoEncaminhamento.query.get(tipo_encaminhamento).tipoEncaminhamento,
+                                    "nome_paciente": Paciente.query.get(paciente).nomeCompleto,
+                                    "cpf_paciente": Paciente.query.get(paciente).cpf,
+                                    "nome_medico": Medico.query.get(medico).nomeCompleto,
+                                    "especialidade": Medico.query.get(medico).nomeEspecialidade
+                                    }
+            return render_template("teste_confirmacao_encaminhamento.html",
+                                   encaminhamento=encaminhamento_gerado
+                                   )
+
+        if tipo_encaminhamento == "2":
+            encaminhamento_gerado = {
+                                    "tipo": TipoEncaminhamento.query.get(tipo_encaminhamento).tipoEncaminhamento,
+                                    "nome_paciente": Paciente.query.get(paciente).nomeCompleto,
+                                    "cpf_paciente": Paciente.query.get(paciente).cpf,
+                                    "exame": TipoExame.query.get(exame).tipoExame,
+                                    }
+            return render_template("teste_confirmacao_encaminhamento.html",
+                                   encaminhamento=encaminhamento_gerado
+                                   )
+
+    return render_template("teste_gerar_encaminhamento.html",
+                           exames=exames,
+                           medicos=medicos,
+                           pacientes=pacientes
+                           )
+
+
+# TESTE
+@app.route('/listar_encaminhamentos', methods=['GET', 'POST'])
+def teste_listar_encaminhamentos():
+    pacientes = Paciente.query.order_by(Paciente.nomeCompleto).all()
+    if request.method == 'POST':
+        id_paciente = request.form.get('input_paciente')
+        paciente = Paciente.query.get(id_paciente)
+        exames = Encaminhamento.query.filter(Encaminhamento.id_paciente == id_paciente).filter(Encaminhamento.id_exame != "...").all()
+        consultas = Encaminhamento.query.filter(Encaminhamento.id_paciente == id_paciente).filter(Encaminhamento.id_medico != "...").all()
+        return render_template("teste_listar_encaminhamentos.html", pacientes=pacientes, exames=exames, consultas=consultas, paciente=paciente)
+    return render_template("teste_listar_encaminhamentos.html", pacientes=pacientes)

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% include 'includes/bootstrap.html' %}
+</head>
+<body>
+    <div class="container">
+        <h3 class="text-center mt-3 mb-5">CONFIRMAÇÃO DE ENCAMINHAMENTO</h3>
+
+        <h5 class="mb-0">Tipo de Encaminhamento</h5>
+        <div class="lead mb-4">{{ encaminhamento["tipo"] }}</div>
+
+        <h5 class="mb-0">Nome Paciente</h5>
+        <div class="lead mb-4">{{ encaminhamento["nome_paciente"] }}</div>
+
+        <h5 class="mb-0">CPF Paciente</h5>
+        <div class="lead mb-4">{{ encaminhamento["cpf_paciente"] }}</div>
+
+        {% if encaminhamento["tipo"] == "Consulta" %}
+            <h5 class="mb-0">Nome Médico</h5>
+            <div class="lead mb-4">{{ encaminhamento["nome_medico"] }}</div>
+
+            <h5 class="mb-0">Especialidade</h5>
+            <div class="lead mb-4">{{ encaminhamento["especialidade"] }}</div>
+        {% endif %}
+
+        {% if encaminhamento["tipo"] == "Exame" %}
+            <h5 class="mb-0">Exame</h5>
+            <div class="lead mb-4">{{ encaminhamento["exame"] }}</div>
+        {% endif %}
+
+
+
+    </div>
+</body>
+</html>

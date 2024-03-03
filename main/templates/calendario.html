@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href='https://unpkg.com/fullcalendar@5/main.min.css' rel='stylesheet' />
+    {% include 'includes/bootstrap.html' %}
+    <script src='https://unpkg.com/fullcalendar@5/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: '/api/eventos' // Use a rota Flask que retorna eventos em JSON
+            });
+            calendar.render();
+        });
+    </script>
+</head>
+<body>
+    <div class="container lead">
+        <div id='calendar'></div>
+    </div>
+</body>
+</html>
