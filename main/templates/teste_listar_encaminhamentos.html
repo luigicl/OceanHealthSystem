@@ -116,7 +116,7 @@
                     <option value="...">...</option>
 
                     {% for paciente in pacientes %}
-                        <option value="{{ paciente.id_paciente }}">{{ paciente.nomeCompleto }} - {{ paciente.cpf }}</option>
+                        <option value="{{ paciente.id_paciente }}">{{ paciente.nome }} - {{ paciente.cpf }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -125,7 +125,7 @@
             </div>
         </form>
         {% if paciente %}
-            <h3 class="mb-4">Agendamentos existentes para o paciente: {{paciente.nomeCompleto}} - CPF {{paciente.cpf}}</h3>
+            <h3 class="mb-4">Agendamentos existentes para o paciente: {{paciente.nome}} - CPF {{paciente.cpf}}</h3>
         {% endif %}
         {% if consultas %}
             <h4>Consultas</h4>

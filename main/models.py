@@ -94,6 +94,9 @@ class DimEncaminhamento(db.Model):
     medico = db.relationship('DimMedico', backref=db.backref('encaminhamentos', lazy=True))
     exame = db.relationship('DimTipoExame', backref=db.backref('encaminhamentos', lazy=True))
 
+    def __repr__(self):
+        return f"Encaminhamento {self.id_encaminhamento} - {DimTipoEncaminhamento.query.filter(DimTipoEncaminhamento.id_tipo_encaminhamento == self.fk_id_tipo_encaminhamento).first().tipo_encaminhamento} - Paciente {DimPaciente.query.filter(DimPaciente.id_paciente == self.fk_id_paciente).first().nome}"
+
 
 # Modelo para Disponibilidade de Exames
 class DimDisponibilidadeExames(db.Model):

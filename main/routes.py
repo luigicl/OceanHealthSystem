@@ -118,10 +118,11 @@ def menu_principal():
 
 @app.route('/consulta')
 def consulta():
-    disponibilidade_clinico = DimDisponibilidadeConsultas.query.filter(DimDisponibilidadeConsultas.fk_id_medico == app.config["ID_CLINICO_GERAL"])
+    disponibilidade_clinico = (DimDisponibilidadeConsultas.query
+                               .filter(DimDisponibilidadeConsultas.fk_id_medico == app.config["ID_CLINICO_GERAL"])
+                               .filter(DimDisponibilidadeConsultas.status == None))  # .filter() não aceita "is None"
     medico = DimMedico.query.get(app.config["ID_CLINICO_GERAL"])
-    for i in disponibilidade_clinico:
-        pass
+    # for i in disponibilidade_clinico:
         # print(i.data_disponivel.strftime("%d/%m/%Y"), i.hora_disponivel.strftime("%H:%M"))
     return render_template("agendamento_consulta.html", disponibilidade_clinico=disponibilidade_clinico, medico=medico)
 
@@ -138,7 +139,7 @@ def teste_gerar_encaminhamento():
         medico = request.form.get('input_especialidade')
         paciente = request.form.get('input_paciente')
         protocolo = gerar_protocolo('encaminhamento')
-        if tipo_encaminhamento == "1":
+        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_CONSULTA"]:
             encaminhamento = DimEncaminhamento(
                 fk_id_tipo_encaminhamento=tipo_encaminhamento,
                 fk_id_paciente=paciente,
@@ -160,7 +161,7 @@ def teste_gerar_encaminhamento():
                                    encaminhamento=encaminhamento_gerado
                                    )
 
-        if tipo_encaminhamento == "2":
+        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_EXAME"]:
             encaminhamento = DimEncaminhamento(
                 fk_id_tipo_encaminhamento=tipo_encaminhamento,
                 fk_id_paciente=paciente,
@@ -195,11 +196,11 @@ def teste_listar_encaminhamentos():
     if request.method == 'POST':
         id_paciente = request.form.get('input_paciente')
         paciente = DimPaciente.query.get(id_paciente)
-        exames = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(DimEncaminhamento.fk_id_exame != "...").all()
-        consultas = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(DimEncaminhamento.fk_id_medico != "...").all()
+        exames = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(DimEncaminhamento.fk_id_exame != None).all()
+        consultas = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(DimEncaminhamento.fk_id_medico != None).all()
         return render_template("teste_listar_encaminhamentos.html",
                                pacientes=pacientes,
-                               xames=exames,
+                               exames=exames,
                                consultas=consultas,
                                paciente=paciente
                                )
