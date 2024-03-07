@@ -128,7 +128,7 @@
                 <option value="...">...</option>
 
                 {% for paciente in pacientes %}
-                    <option value="{{ paciente.id_paciente }}">{{ paciente.nomeCompleto }} - {{ paciente.cpf }}</option>
+                    <option value="{{ paciente.id_paciente }}">{{ paciente.nome }} - {{ paciente.cpf }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -149,7 +149,7 @@
                 <option value="...">...</option>
 
                 {% for medico in medicos %}
-                    <option value="{{ medico.id_medico }}">{{ medico.nomeEspecialidade }}</option>
+                    <option value="{{ medico.id_medico }}">{{ medico.especialidade }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -160,7 +160,7 @@
                 <option value="...">...</option>
 
                 {% for exame in exames %}
-                    <option value="{{ exame.id_exame }}">{{ exame.tipoExame }}</option>
+                    <option value="{{ exame.id_exame }}">{{ exame.tipo_exame }}</option>
                 {% endfor %}
             </select>
         </div>

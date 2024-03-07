@@ -74,9 +74,9 @@ header{
     background: linear-gradient(#245567, #2f4858);
 }
 
-#title_service{
+#title_service {
     color: #fff;
-    margin-top: 11rem;
+    margin-top: 8rem;
 }
 
 .services{
@@ -117,7 +117,7 @@ header{
 
 /* Arquivo agendamento_consulta.html */
 
-.informations{ 
+.informations{
     width: 70%;
     margin-top: 3rem;
     display: flex;
@@ -142,7 +142,7 @@ header{
     align-items: start;
     justify-content: start;
     gap: 1rem;
-    width: 300px;
+    width: 800px;
 }
 
 .subtitle {
@@ -169,6 +169,7 @@ header{
     background-color: #599dc6;
     color: #fff;
     cursor: pointer;
+    width: 275px;
 }
 
 .obs textarea {
