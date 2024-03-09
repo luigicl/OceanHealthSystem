@@ -144,7 +144,7 @@ def calendario():
 
 @app.route('/menu')
 def menu_principal():
-    return render_template("menu.html")
+    return render_template('menu.html')
 
 
 @app.route('/consulta')

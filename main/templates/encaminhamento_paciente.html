@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste</title>
+    <link rel="stylesheet" href="./index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="container">
+
+        <header>
+            <div class="card">
+                <!-- Área das Info -->
+                <div class="infos">
+                    <div class="user_img">
+                        <div class="img_test">
+    
+                        </div>
+                    </div>
+                    <div class="user_info">
+                        <h2>Anthony Pinho</h2>
+                        <p>Paciente - Carteira Digital</p>
+                        <p>12344556788</p>
+                    </div>
+                </div>
+                <!-- Fim da Área das Info -->
+    
+                <div class="footer_card">
+                    <a href="#">Clique aqui para acessar seu perfil</a>
+                </div>
+            </div>
+        </header>
+        <section class="services_area">
+            <h2 id="title_service">Emissão de Encaminhamento</h2>
+            <div class="details-users">
+                <details class="dtl-user">
+
+                    <summary>Ribamar - 123445568122</summary>
+                    <form method="POST" name="form_encaminhamento">
+
+                        <div class="slt-option">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" value="1" id="rb_consulta" name="rb_tipo_encaminhamento">
+                                <label class="form-check-label" for="rb_consulta">Consulta</label>
+                            </div>
+    
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" value="2" id="rb_exame" name="rb_tipo_encaminhamento">
+                                <label class="form-check-label" for="rb_exame">Exame</label>
+                            </div>
+
+                            <div class="form-group hidden" id="div_especialidade">
+                                <label for="input_especialidade">Especialidade:</label>
+                                <br>
+                                <select name="input_especialidade" id="input_especialidade">
+                                    <option value="..." selected disabled>Selecione uma opção</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+                    
+                            <div class="form-group hidden" id="div_tipo_exame">
+                                <label for="input_tipo_exame">Exame:</label>
+                                <br>
+                                <select name="input_tipo_exame" id="input_tipo_exame">
+
+                                    <option value="..." selected disabled>Selecione uma opção</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                            </div>
+    
+                            <input type="submit" class="btn-send" value="Encaminhar">
+
+                        </div>
+                        
+                    </form>
+                </details>
+
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const div_exame = document.getElementById("div_tipo_exame");
+        const div_especialidade = document.getElementById("div_especialidade");
+
+
+
+        document.getElementById("rb_consulta").addEventListener('change',(event)=>{
+          if (event.target.checked){
+            div_especialidade.classList.remove("hidden");
+            div_exame.classList.add("hidden");
+          } else {
+            div_especialidade.classList.add("hidden");
+            div_exame.classList.remove("hidden");
+          }
+        });
+
+        document.getElementById("rb_exame").addEventListener('change',(event)=>{
+          if (event.target.checked){
+            div_especialidade.classList.add("hidden");
+            div_exame.classList.remove("hidden");
+          } else {
+            div_especialidade.classList.remove("hidden");
+            div_exame.classList.add("hidden");
+          }
+        });
+    </script>
+
+</body>
+</html>
