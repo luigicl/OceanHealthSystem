@@ -129,6 +129,9 @@ def consulta():
         # print(i.data_disponivel.strftime("%d/%m/%Y"), i.hora_disponivel.strftime("%H:%M"))
     return render_template("modelo_lista_pacientes_exames.html", disponibilidade_clinico=disponibilidade_clinico, medico=medico)
 
+@app.route('/lista-consulta')
+def listagem_consulta():
+    return render_template('modelo_lista_pacientes_exames.html')
 
 # TESTE
 @app.route('/gerar_encaminhamento', methods=['GET', 'POST'])
