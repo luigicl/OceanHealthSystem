@@ -322,12 +322,14 @@ header{
 /* modelo de confirmacao */
 .card-confirmation{
     width: 350px;
-    height: 300px;
+    height: fit-content;
     margin-top: 13rem;
     background-color: #599dc6;
     border-radius: 12px;
     display: flex;
-    flex-direction: column;
+    padding-bottom: 3rem;
+    flex-direction: column; 
+    justify-content: center;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, .2);
 }
 
