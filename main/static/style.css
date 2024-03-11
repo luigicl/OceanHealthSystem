@@ -274,9 +274,46 @@ header{
 
 .user_more_info{
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 4rem;
+    align-items: center;
+    justify-content: space-between;
     color: #fff;
+}
+
+.name-date{
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.pending{
+    background-color: #f9f871;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 4px;
+}
+
+.finish{
+    background-color: #389b82;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 4px;
+}
+
+.canceled{
+    background-color: #b62b21;
+    color: #000;
+    font-weight: bold;
+    box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 4px;
 }
 
 /* Fim lista paciente exames */
