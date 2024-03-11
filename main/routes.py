@@ -120,11 +120,14 @@ def menu_principal():
 def consulta():
     disponibilidade_clinico = (DimDisponibilidadeConsultas.query
                                .filter(DimDisponibilidadeConsultas.fk_id_medico == app.config["ID_CLINICO_GERAL"])
-                               .filter(DimDisponibilidadeConsultas.status == None))  # .filter() não aceita "is None"
+                               .filter(DimDisponibilidadeConsultas.status == None)
+                               .order_by(DimDisponibilidadeConsultas.data_disponivel)
+                               .order_by(DimDisponibilidadeConsultas.hora_disponivel)
+                               )  # .filter() não aceita "is None"
     medico = DimMedico.query.get(app.config["ID_CLINICO_GERAL"])
     # for i in disponibilidade_clinico:
         # print(i.data_disponivel.strftime("%d/%m/%Y"), i.hora_disponivel.strftime("%H:%M"))
-    return render_template("agendamento_consulta.html", disponibilidade_clinico=disponibilidade_clinico, medico=medico)
+    return render_template("modelo_lista_pacientes_exames.html", disponibilidade_clinico=disponibilidade_clinico, medico=medico)
 
 
 # TESTE
@@ -233,8 +236,6 @@ def teste_agendar():
     db.session.add(agendamento)
     db.session.commit()
 
-
-
     return redirect(url_for("consulta"))
 
 
@@ -282,7 +283,7 @@ def gerar_protocolo(tipo):
 #         db.session.add(nova_consulta)
 #         db.session.commit()
 #         return redirect(url_for('calendario'))
-#     return render_template('agendar.html', form=form)
+#     return render_template('teste_agendar.html', form=form)
 #
 #
 # # TESTE CALENDÁRIO
