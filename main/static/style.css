@@ -210,9 +210,9 @@ header{
     margin-top: 12px;
     margin-bottom: 12px;
     max-height: 600px;
-    width: 550px;
+    width: 480px;
     display: flex;
-    justify-content: start;
+    justify-content: end;
     align-items: center;
     flex-wrap: wrap;
     overflow-y: auto;
@@ -232,11 +232,16 @@ header{
     border-radius: 20px;       
 }
 
+.user_info a {
+    text-decoration: none;
+    color: #fff;
+}
+
 .user_info_list{
     text-decoration: none;
     display: flex;
     align-items: center;
-    width: 550px;
+    width: 460px;
     background-color: #597ab0;
     border-radius: 10px;
     cursor: pointer;
@@ -252,6 +257,7 @@ header{
 .date-consult{
     display: flex;
     flex-direction: column;
+    min-width: 180px;
     align-items: center;
     margin-right: 1rem;
     border-right: 2px solid #fff;
@@ -276,6 +282,7 @@ header{
 .user_more_info{
     display: flex;
     flex-direction: column;
+    min-width: 230px;
     gap: 4px;
     padding: 1rem;
     align-items: center;
@@ -379,6 +386,11 @@ header{
     letter-spacing: 1px;
 }
 
+.op-good:hover{
+    background-color: #00627D;
+    box-shadow: 0px 0px 5px #97dedf;
+}
+
 .op-bad{
     background-color: #fff;
     padding: 1rem;
@@ -387,6 +399,18 @@ header{
     text-decoration: none;
     font-weight: bold;
     letter-spacing: 1px;
+    border: none;
+
+}
+
+.op-bad:hover{
+    background-color: #FAFAFA;
+    box-shadow: 0px 0px 5px #97dedf;
+}
+
+.modal-content{
+    background-color: #599dc6;
+    color: #fff;
 }
 /* Fim modelo de confirmacao */
 

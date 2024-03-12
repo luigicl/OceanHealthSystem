@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OHS - Menu Principal</title>
+    {% include 'includes/bootstrap.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
 </head>
 <body>
     <header>
@@ -18,9 +20,9 @@
                     </div>
                 </div>
                 <div class="user_info">
-                    <h2>Anthony Pinho</h2>
-                    <p>Paciente - Carteira Digital</p>
-                    <p>12344556788</p>
+                    <h2 class="mb-0">Anthony Pinho</h2>
+                    <p class="mb-0">Paciente - Carteira Digital</p>
+                    <p class="mb-0">12344556788</p>
                 </div>
             </div>
             <!-- Fim da Área das Info -->
@@ -31,21 +33,21 @@
         </div>
     </header>
     <section class="services_area">
-        <h2 id="title_service">O que você pretende fazer hoje ?</h2>
+        <h2 id="title_service">O que você pretende fazer hoje?</h2>
         <div class="services">
-            <a href="#" class="option">
-                <i class="bi bi-calendar"></i>
-                <p href="#">Agendar Consulta</p>
+            <a href="{{ url_for('agendar_consulta') }}" class="option">
+                <i class="bi bi-calendar-heart"></i>
+                <p>Agendar Consulta</p>
+            </a>
+
+            <a href="{{ url_for('listar_encaminhamentos') }}" class="option">
+                <i class="bi bi-journals"></i>
+                <p>Encaminhamentos</p>
             </a>
 
             <a href="#" class="option">
-                <i class="bi bi-bandaid"></i>
-                <p href="#">Agendar Exame</p>
-            </a>
-
-            <a href="#" class="option">
-                <i class="bi bi-heart-pulse-fill"></i>
-                <p href="#">Minha Agenda</p>
+                <i class="bi bi-calendar3"></i>
+                <p>Minha Agenda</p>
             </a>
 
             <a href="#" class="option">

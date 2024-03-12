@@ -41,6 +41,7 @@ class DimMedico(db.Model):
     _tablename_ = 'dim_medico'
     id_medico = db.Column(db.Integer, primary_key=True)
     cpf = db.Column(db.String(11), unique=True, nullable=False)
+    pronome_tratamento = db.Column(db.String(10), nullable=False)
     nome = db.Column(db.String(100), nullable=False)
     crm = db.Column(db.String(20), unique=True, nullable=False)
     data_nascimento = db.Column(db.Date, nullable=True)
@@ -93,6 +94,7 @@ class DimEncaminhamento(db.Model):
     paciente = db.relationship('DimPaciente', backref=db.backref('encaminhamentos', lazy=True))
     medico = db.relationship('DimMedico', backref=db.backref('encaminhamentos', lazy=True))
     exame = db.relationship('DimTipoExame', backref=db.backref('encaminhamentos', lazy=True))
+    tipo = db.relationship('DimTipoEncaminhamento', backref=db.backref('tipo', lazy=True))
 
     def __repr__(self):
         return f"Encaminhamento {self.id_encaminhamento} - {DimTipoEncaminhamento.query.filter(DimTipoEncaminhamento.id_tipo_encaminhamento == self.fk_id_tipo_encaminhamento).first().tipo_encaminhamento} - Paciente {DimPaciente.query.filter(DimPaciente.id_paciente == self.fk_id_paciente).first().nome}"

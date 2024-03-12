@@ -20,9 +20,11 @@
                         </div>
                     </div>
                     <div class="user_info">
-                        <h2>Anthony Pinho</h2>
-                        <p>Paciente - Carteira Digital</p>
-                        <p>12344556788</p>
+                        <a href="/menu_paciente">
+                            <h2 class="mb-0">Anthony Pinho</h2>
+                            <p class="mb-0">Paciente - Carteira Digital</p>
+                            <p class="mb-0">12344556788</p>
+                        </a>
                     </div>
                 </div>
                 <!-- Fim da Área das Info -->
@@ -53,14 +55,14 @@
 
                     <!-- Modal confirmar agendamento -->
                     <div class="modal fade" id="confirmation{{horario.id_disponibilidade_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-dialog-scrollable">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                         <div class="modal-content">
                           <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Confirmar agendamento</h1>
+                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Você deseja confirmar o agendamento abaixo?</h1>
 <!--                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
                           </div>
                           <div class="modal-body">
-                            <h5 class="fs-5">Você deseja confirmar o agendamento abaixo:</h5>
+<!--                            <h5 class="fs-5">Você deseja confirmar o agendamento abaixo:</h5>-->
                             <p class="mb-1">Data: {{horario.data_disponivel.strftime("%d/%m/%Y")}} - {{horario.dia_semana}}</p>
                             <p class="mb-1">Horário: {{horario.hora_disponivel.strftime("%H:%M")}}</p>
                             <p class="mb-1">Especialidade: {{medico.especialidade}}</p>

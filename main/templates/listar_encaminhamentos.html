@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include 'includes/bootstrap.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <header>
+        <div class="card">
+            <!-- Área das Info -->
+            <div class="infos">
+                <div class="user_img">
+                    <div class="img_test">
+
+                    </div>
+                </div>
+                <div class="user_info">
+                    <a href="/menu_paciente">
+                        <h2 class="mb-0">Anthony Pinho</h2>
+                        <p class="mb-0">Paciente - Carteira Digital</p>
+                        <p class="mb-0">12344556788</p>
+                    </a>
+                </div>
+            </div>
+            <!-- Fim da Área das Info -->
+
+            <div class="footer_card">
+                <a href="#">Clique aqui para acessar seu perfil</a>
+            </div>
+        </div>
+    </header>
+
+    <section class="services_area">
+        <h2 class="mb-4" id="title_service">
+            {{ titulo }}
+        </h2>
+
+        {% if not encaminhamentos %}
+            <h4 class="mt-5" style="color: #fff;">*** Não há encaminhamentos pendentes ***</h4>
+        {% endif %}
+
+
+        <div class="list_users">
+            {% for encaminhamento in encaminhamentos %}
+                <a href="#" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{encaminhamento.id_encaminhamento}}">
+                    <div class="date-consult">
+                        <span id="date_list">{{ encaminhamento.tipo.tipo_encaminhamento }}</span>
+                        {% if encaminhamento.fk_id_medico %}
+                            <span id="day_list">{{encaminhamento.medico.especialidade}}</span>
+                        {% endif %}
+                        {% if encaminhamento.fk_id_exame %}
+                            <span id="day_list">{{encaminhamento.exame.tipo_exame}}</span>
+                        {% endif %}
+                    </div>
+                    <div class="user_more_info">
+                        <span>Protocolo: {{encaminhamento.protocolo_encaminhamento}}</span>
+                        <span>{{encaminhamento.medico.pronome_tratamento}} {{encaminhamento.medico.nome}}</span>
+                        <!-- Usar como modelo e passar apenas os dados que precisa, no caso só um parametro pra e apagar o outro -->
+                    </div>
+                </a>
+
+                <!-- Modal confirmar agendamento -->
+                <div class="modal fade" id="confirmation{{encaminhamento.id_encaminhamento}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Você deseja prosseguir com o agendamento do encaminhamento abaixo?</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+<!--                        <h5 class="fs-5">Você deseja prosseguir com o agendamento do encaminhamento abaixo:</h5>-->
+                        <p class="mb-1">Protocolo: {{encaminhamento.protocolo_encaminhamento}}</p>
+                        <p class="mb-1">Tipo: {{ encaminhamento.tipo.tipo_encaminhamento }}</p>
+                        {% if encaminhamento.fk_id_medico %}
+                            <p class="mb-1">Especialidade: {{encaminhamento.medico.especialidade}}</p>
+                            <p class="mb-1">Médico(a): {{encaminhamento.medico.pronome_tratamento}} {{encaminhamento.medico.nome}}</p>
+                        {% endif %}
+                        {% if encaminhamento.fk_id_exame %}
+                            <p class="mb-1">Descrição: {{encaminhamento.exame.tipo_exame}}</p>
+                        {% endif %}
+
+
+
+                      </div>
+                      <div class="modal-footer">
+<!--                          <form  method="POST">-->
+<!--                            <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
+<!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento={{encaminhamento.id_encaminhamento}}">-->
+<!--                          </form>-->
+
+                          <form method="post" action="{{ url_for('agendar_encaminhamento') }}" class="inline">
+<!--                              <input type="hidden" name="extra_submit_param" value="extra_submit_value">-->
+                              <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
+                              <button type="submit" name="id_encaminhamento" value="{{encaminhamento.id_encaminhamento}}" class="op-good">
+                                Prosseguir
+                              </button>
+                          </form>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!--     fim do Modal     -->
+
+            {% endfor%}
+        </div>
+    </section>
+</body>
+</html>
