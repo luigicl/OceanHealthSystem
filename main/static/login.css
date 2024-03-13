@@ -1,0 +1,153 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #245567;
+    color: #fff;
+}
+
+.welcome-text{
+    margin-top: 20rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.welcome-text h1{
+    font-size: 28pt;    
+}
+
+.btn-action-login{
+    margin-top: 2rem;
+}
+
+.content-login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#title-login{
+    text-shadow: 0px 6px 10px rgba(255, 255, 255, .1);
+}
+
+.info-content{
+    margin-top: 9rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.mandatory {
+    position: relative;
+    right: 18rem;
+    color: #599dc6;
+}
+
+.form-control{
+    margin-top: 1rem;
+    width: 34%;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+label {
+    flex-basis: 40%;
+    text-align: left;
+}
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"] {
+    flex-basis: 60%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    width: 100%;
+}
+.button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px; /* Espaçamento entre os botões */
+}
+
+#accept{
+    border: none;
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #fff;
+    color: #245567;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .324s;
+}
+
+#accept:hover{
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+}
+
+#cancel{
+    border: 1px solid #fff;
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #245567;
+    color: #FFF;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .324s;
+}
+
+#cancel:hover{
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+}
+
+.required-star {
+    color: red;
+}
+
+
+.first-access {
+    background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%);
+}
+.first-access:hover {
+    background-image: linear-gradient(to left, #6a11cb 0%, #2575fc 100%);
+    color: white;
+}
+.login {
+    background-image: linear-gradient(to right, #ff512f 0%, #dd2476 100%);
+}
+.login:hover {
+    background-image: linear-gradient(to left, #ff512f 0%, #dd2476 100%);
+    color: white;
+}
+.button:hover {
+    opacity: 0.8;
+}
