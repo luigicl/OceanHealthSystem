@@ -7,6 +7,7 @@
 
 body{
     height: 100vh;
+    background-color: #245567;
 }
 
 header{
@@ -72,6 +73,7 @@ header{
     width: 100%;
     height: 84vh;
     background: linear-gradient(#245567, #2f4858);
+    overflow: hidden;
 }
 
 #title_service {
