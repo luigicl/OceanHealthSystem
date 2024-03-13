@@ -76,7 +76,13 @@ header{
 
 #title_service {
     color: #fff;
-    margin-top: 8rem;
+    margin-top: 7rem;
+}
+
+#subtitle_service {
+    color: #fff;
+    font-size: 18px;
+    font-style: italic;
 }
 
 .services{
@@ -242,12 +248,31 @@ header{
     display: flex;
     align-items: center;
     width: 460px;
+
     background-color: #597ab0;
     border-radius: 10px;
     cursor: pointer;
     transition: all .1s;
     margin-bottom: 1rem;
     margin-right: 1rem;
+}
+
+.type_schedule{
+    display: flex;
+    align-items: center;
+    width: 460px;
+    justify-content: center;
+    background-color: #597ab0;
+    border-radius: 10px;
+    transition: all .1s;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+}
+
+#type{
+    font-size: 18pt;
+    font-weight: bold;
+    color: #fff;
 }
 
 .user_info_list:hover{
@@ -258,7 +283,9 @@ header{
     display: flex;
     flex-direction: column;
     min-width: 180px;
+    height: 130px;
     align-items: center;
+    justify-content: center;
     margin-right: 1rem;
     border-right: 2px solid #fff;
     padding: 1rem;
@@ -296,34 +323,34 @@ header{
     gap: 6px;
 }
 
-.pending{
+.Pendente{
     background-color: #f9f871;
     color: #000;
     font-weight: bold;
     box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
     border-radius: 10px;
     font-size: 16px;
-    padding: 4px;
+    padding: 6px;
 }
 
-.finish{
+.Realizado{
     background-color: #389b82;
     color: #000;
     font-weight: bold;
     box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
     border-radius: 10px;
     font-size: 16px;
-    padding: 4px;
+    padding: 6px;
 }
 
-.canceled{
+.Cancelado{
     background-color: #b62b21;
     color: #000;
     font-weight: bold;
     box-shadow: 0px 0px 3px rgba(0,0,0,0.4);
     border-radius: 10px;
     font-size: 16px;
-    padding: 4px;
+    padding: 6px;
 }
 
 /* Fim lista paciente exames */

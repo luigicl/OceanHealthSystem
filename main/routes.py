@@ -116,33 +116,60 @@ def menu_principal_paciente():
     return render_template('menu_paciente.html')
 
 
+# noinspection PyComparisonWithNone
 @app.route('/encaminhamentos', methods=['GET', 'POST'])
-def listar_encaminhamentos():
-    id_paciente = 4  # SERÁ SUBSTITUÍDO PELO ID DO USUÁRIO LOGADO
+def listar_encaminhamentos_pendentes():
+    id_paciente = 1  # SERÁ SUBSTITUÍDO PELO ID DO USUÁRIO LOGADO
     paciente = DimPaciente.query.get(id_paciente)
     encaminhamentos = (DimEncaminhamento.query
                        .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
+                       .filter(DimEncaminhamento.protocolo_agendamento == None)
                        .all()
                        )
-    exames = (
-        DimEncaminhamento.query
-        .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
-        .filter(DimEncaminhamento.fk_id_exame != None)
-        .all()
-    )
-    consultas = (
-        DimEncaminhamento.query
-        .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
-        .filter(DimEncaminhamento.fk_id_medico != None)
-        .all()
-    )
+    # exames = (
+    #     DimEncaminhamento.query
+    #     .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
+    #     .filter(DimEncaminhamento.fk_id_exame != None)
+    #     .all()
+    # )
+    # consultas = (
+    #     DimEncaminhamento.query
+    #     .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
+    #     .filter(DimEncaminhamento.fk_id_medico != None)
+    #     .all()
+    # )
     titulo = "Lista de encaminhamentos pendentes"
     return render_template("listar_encaminhamentos.html",
-                           exames=exames,
-                           consultas=consultas,
+                           # exames=exames,
+                           # consultas=consultas,
                            paciente=paciente,
                            encaminhamentos=encaminhamentos,
                            titulo=titulo
+                           )
+
+
+@app.route('/minha_agenda')
+def mostrar_agenda_paciente():
+    id_paciente = 1
+    paciente = DimPaciente.query.get(id_paciente)
+    consultas_agendadas = (db.session.query(FatoAgendaConsulta)
+                           .join(FatoAgendaConsulta.disponibilidade_consulta)
+                           .order_by(DimDisponibilidadeConsultas.data_disponivel)
+                           .order_by(DimDisponibilidadeConsultas.hora_disponivel)
+                           .filter(FatoAgendaConsulta.fk_id_paciente == id_paciente)
+                           .all()
+                           )
+    exames_agendados = (db.session.query(FatoAgendaExame)
+                        .join(FatoAgendaExame.disponibilidade_exame)
+                        .order_by(DimDisponibilidadeExames.data_disponivel)
+                        .order_by(DimDisponibilidadeExames.hora_disponivel)
+                        .filter(FatoAgendaExame.fk_id_paciente == id_paciente)
+                        .all()
+                        )
+    return render_template("agenda_paciente.html",
+                           paciente=paciente,
+                           consultas=consultas_agendadas,
+                           exames=exames_agendados
                            )
 
 
@@ -166,8 +193,8 @@ def agendar_clinico():
                            )
 
 
-@app.route('/agendar_encaminhamento', methods=['GET', 'POST'])
-def agendar_encaminhamento():
+@app.route('/selecionar_disponibilidade', methods=['GET', 'POST'])
+def selecionar_disponibilidade():
     """ Listar a disponibilidade para agendamento de um encaminhamento """
     print(request.method)
     if request.method == 'POST':
@@ -184,29 +211,110 @@ def agendar_encaminhamento():
                                           .order_by(DimDisponibilidadeConsultas.data_disponivel)
                                           .order_by(DimDisponibilidadeConsultas.hora_disponivel)
                                           )
-            titulo = "Disponbilidade para consulta com"
             medico = DimMedico.query.get(id_medico)
-
-            # disponibilidade_clinico = (DimDisponibilidadeConsultas.query
-            #                            .filter(DimDisponibilidadeConsultas.fk_id_medico == app.config["ID_CLINICO_GERAL"])
-            #                            .filter(DimDisponibilidadeConsultas.status == None)
-            #                            .order_by(DimDisponibilidadeConsultas.data_disponivel)
-            #                            .order_by(DimDisponibilidadeConsultas.hora_disponivel)
-            #                            )  # .filter() não aceita "is None"
-            # medico = DimMedico.query.get(app.config["ID_CLINICO_GERAL"])
-            # titulo = "Disponbilidade para consulta com"
-            # for i in disponibilidade_clinico:
-            # print(i.data_disponivel.strftime("%d/%m/%Y"), i.hora_disponivel.strftime("%H:%M"))
-            # return render_template("agendar_consulta.html",
-            #                        disponibilidade_clinico=disponibilidade_clinico,
-            #                        medico=medico,
-            #                        titulo=titulo
-            #                        )
-            return render_template('agendar_encaminhamento.html',
+            titulo = f"Disponbilidade para consulta com {medico.especialidade}"
+            return render_template('selecionar_disponibilidade_encaminhamento.html',
                                    disponibilidades_consultas=disponibilidades_consultas,
                                    medico=medico,
-                                   titulo=titulo
+                                   titulo=titulo,
+                                   id_encaminhamento=id_encaminhamento
                                    )
+
+        if id_exame is not None:
+            disponibilidades_exames = (DimDisponibilidadeExames.query
+                                       .filter(DimDisponibilidadeExames.fk_id_exame == id_exame)
+                                       .order_by(DimDisponibilidadeExames.data_disponivel)
+                                       .order_by(DimDisponibilidadeExames.hora_disponivel)
+                                       )
+            exame = DimTipoExame.query.get(id_exame)
+            titulo = f"Disponbilidade para realizar o exame de {exame.tipo_exame}"
+            return render_template('selecionar_disponibilidade_encaminhamento.html',
+                                   disponibilidades_exames=disponibilidades_exames,
+                                   exame=exame,
+                                   titulo=titulo,
+                                   id_encaminhamento=id_encaminhamento
+                                   )
+
+    return ("<h2 style='margin-top:40px; margin-left:20px;'>ERRO!<br><br>Esta página deve ser acessada exclusivamente "
+            "a partir do menu de encaminhamentos pendentes.</h2>")
+
+
+@app.route('/agendar_encaminhamento', methods=['GET', 'POST'])
+def agendar_encaminhamento():
+    """ Realiza a gravação do agendamento de um encaminhamento no BD e exibe a confirmação para o usuário """
+    id_encaminhamento = request.form.get("id_encaminhamento")
+    print("id encaminhamentoo: " + id_encaminhamento)
+    id_disponibilidade = request.form.get("id_disponibilidade")
+    tipo_agendamento = request.form.get("tipo_agendamento")
+    # id_paciente = id do paciente logado
+    id_paciente = choice([1, 2, 3, 4, 5])
+
+    if tipo_agendamento == "consulta":
+        protocolo = gerar_protocolo('consulta')
+        id_medico = DimDisponibilidadeConsultas.query.get(id_disponibilidade).fk_id_medico
+        agendamento = FatoAgendaConsulta(
+            fk_id_encaminhamento=id_encaminhamento,
+            fk_id_medico=id_medico,
+            fk_id_paciente=id_paciente,
+            fk_id_disponibilidade_consulta=id_disponibilidade,
+            protocolo_consulta=protocolo,
+            status="Pendente"
+        )
+
+        disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+        disponibilidade.status = "indisponivel"
+
+        medico = DimMedico.query.get(id_medico)
+
+        encaminhamento = DimEncaminhamento.query.get(id_encaminhamento)
+        encaminhamento.protocolo_agendamento = protocolo
+
+        db.session.add(agendamento)
+        db.session.commit()
+
+        # GERAR TELA DE CONFIRMAÇÃO
+
+        return render_template("menu_paciente.html",
+                               confirmacao=1,
+                               protocolo=protocolo,
+                               medico=medico,
+                               disponibilidade=disponibilidade
+                               )
+
+    if tipo_agendamento == "exame":
+        protocolo = gerar_protocolo('exame')
+        id_exame = DimDisponibilidadeExames.query.get(id_disponibilidade).fk_id_exame
+        agendamento = FatoAgendaExame(
+            fk_id_encaminhamento=id_encaminhamento,
+            fk_id_exame=id_exame,
+            fk_id_paciente=id_paciente,
+            fk_id_disponibilidade_exame=id_disponibilidade,
+            protocolo_exame=protocolo,
+            status="Pendente"
+        )
+
+        exame = DimTipoExame.query.get(id_exame).tipo_exame
+
+        disponibilidade = DimDisponibilidadeExames.query.get(id_disponibilidade)
+        disponibilidade.status = "indisponivel"
+
+        encaminhamento = DimEncaminhamento.query.get(id_encaminhamento)
+        encaminhamento.protocolo_agendamento = protocolo
+
+        db.session.add(agendamento)
+        db.session.commit()
+
+        # GERAR TELA DE CONFIRMAÇÃO
+
+        return render_template("menu_paciente.html",
+                               confirmacao=1,
+                               protocolo=protocolo,
+                               exame=exame,
+                               disponibilidade=disponibilidade
+
+                               )
+
+    return redirect(url_for("agendar_clinico"))
 
 
 @app.route('/listar-consultas')
@@ -313,7 +421,8 @@ def teste_agendar():
         fk_id_medico=id_medico,
         fk_id_paciente=id_paciente,
         fk_id_disponibilidade_consulta=id_disponibilidade,
-        protocolo_consulta=protocolo
+        protocolo_consulta=protocolo,
+        status="Pendente"
     )
 
     disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
@@ -351,6 +460,32 @@ def gerar_protocolo(tipo):
         protocolo = "X" + str(numero)
         return protocolo
 
+
+@app.route('/teste')
+def teste():
+    # Consulta para obter consultas e exames do paciente especificado
+    consultas = FatoAgendaConsulta.query.filter_by(fk_id_paciente=1).all()
+    exames = FatoAgendaExame.query.filter_by(fk_id_paciente=1).all()
+
+    # Lista para armazenar resultados
+    result = []
+
+    # Itera sobre as consultas e exames obtidos
+    for consulta in consultas:
+        result.append({
+            'tipo': 'consulta',
+            'id': consulta.id_agendamento_consulta,  # Substitua pelo nome da coluna adequada se necessário
+            # Outros campos específicos da consulta
+        })
+
+    for exame in exames:
+        result.append({
+            'tipo': 'exame',
+            'id': exame.id_agenda_exame,  # Substitua pelo nome da coluna adequada se necessário
+            # Outros campos específicos do exame
+        })
+
+    return jsonify(result)
 # # TESTE CALENDÁRIO
 # @app.route('/agendar', methods=['GET', 'POST'])
 # def agendar():

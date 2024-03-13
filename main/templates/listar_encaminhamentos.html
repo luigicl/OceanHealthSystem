@@ -46,7 +46,7 @@
 
         <div class="list_users">
             {% for encaminhamento in encaminhamentos %}
-                <a href="#" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{encaminhamento.id_encaminhamento}}">
+                <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{encaminhamento.id_encaminhamento}}">
                     <div class="date-consult">
                         <span id="date_list">{{ encaminhamento.tipo.tipo_encaminhamento }}</span>
                         {% if encaminhamento.fk_id_medico %}
@@ -63,7 +63,7 @@
                     </div>
                 </a>
 
-                <!-- Modal confirmar agendamento -->
+                <!-- Modal confirmar seleção encaminhamento -->
                 <div class="modal fade" id="confirmation{{encaminhamento.id_encaminhamento}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
@@ -92,7 +92,7 @@
 <!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento={{encaminhamento.id_encaminhamento}}">-->
 <!--                          </form>-->
 
-                          <form method="post" action="{{ url_for('agendar_encaminhamento') }}" class="inline">
+                          <form method="post" action="{{ url_for('selecionar_disponibilidade') }}" class="inline">
 <!--                              <input type="hidden" name="extra_submit_param" value="extra_submit_value">-->
                               <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
                               <button type="submit" name="id_encaminhamento" value="{{encaminhamento.id_encaminhamento}}" class="op-good">
@@ -109,5 +109,9 @@
             {% endfor%}
         </div>
     </section>
+
+
+
+
 </body>
 </html>
