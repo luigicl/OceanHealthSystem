@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste</title>
+    <title>OHS - Menu do Médico</title>
     {% include 'includes/bootstrap.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -43,7 +43,7 @@
                     <p>Encaminhar <br>Paciente</p>
                 </a>
 
-                <a href="#" class="option">
+                <a href="{{ url_for('listar_pacientes') }}" class="option">
                     <i class="bi bi-list-check"></i>
                     <p>Listar Pacientes</p>
                 </a>
@@ -56,5 +56,57 @@
             </div>
         </section>
     </div>
+
+    <!--    Modal confirmação de encaminhamento     -->
+    <div class="modal fade" id="modal_confirmacao_encaminhamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!-- Add this line to your code -->
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-4" id="exampleModalLabel">O encaminhamento foi realizado com sucesso!</h5><br>
+                </div>
+                <div class="modal-body">
+                    {% if tipo == "Consulta" %}
+                        <p class="mb-3 lead">Informe o protocolo ao seu paciente!</p>
+                        <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
+                        <p class="mb-1">Tipo: {{tipo}}</p>
+                        <p class="mb-1">Paciente: {{paciente.nome}}</p>
+                        <p class="mb-1">CPF: {{paciente.cpf}}</p>
+                        <p class="mb-1">Especialidade: {{medico.especialidade}}</p>
+                        <p class="mb-1">Medico: {{medico.pronome_tratamento}} {{medico.nome}}</p>
+                    {% endif %}
+                    {% if tipo == "Exame" %}
+                        <p class="mb-3 lead">Informe o protocolo ao seu paciente!</p>
+                        <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
+                        <p class="mb-1">Tipo: {{tipo}}</p>
+                        <p class="mb-1">Paciente: {{paciente.nome}}</p>
+                        <p class="mb-1">CPF: {{paciente.cpf}}</p>
+                        <p class="mb-1">Exame: {{exame}}</p>
+                    {% endif %}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="op-good" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  fim modal confirmação encaminhamento   -->
+
+
+    <!-- import jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!--Modal JS Script -->
+    <script type="text/javascript">
+        let conf = {{ confirmacao|safe }};
+        if (conf == 1) {
+        window.onload = () => {
+            $('#modal_confirmacao_encaminhamento').modal('show');
+        }
+        }
+    </script>
+
+
 </body>
 </html>

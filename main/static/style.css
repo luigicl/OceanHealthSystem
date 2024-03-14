@@ -268,6 +268,7 @@ header{
     display: flex;
     align-items: center;
     width: 460px;
+    height: 4rem;
     justify-content: center;
     background-color: #597ab0;
     border-radius: 10px;
@@ -276,7 +277,8 @@ header{
     margin-right: 1rem;
 }
 
-#type{
+#tipo-consulta,
+#tipo-exame{
     font-size: 18pt;
     font-weight: bold;
     color: #fff;

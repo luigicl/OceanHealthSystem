@@ -1,6 +1,8 @@
 from datetime import datetime
 from random import random, randrange, choice
 
+from sqlalchemy import desc
+
 from main import db, app, bcrypt
 from main.models import *
 from main.forms import ConsultaForm
@@ -73,6 +75,13 @@ def logar():
             login_user(paciente)
             return redirect(url_for("menu_principal_paciente", id_usuario=paciente.id_paciente))
     return render_template("login.html")
+
+
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("home"))
 
 
 @app.route("/menu_medico")
@@ -203,16 +212,6 @@ def agendamento_clinico():
                            )
 
 
-
-    # GERAR TELA DE CONFIRMAÇÃO
-
-
-
-
-
-
-
-
 @app.route('/selecionar_disponibilidade', methods=['GET', 'POST'])
 def selecionar_disponibilidade():
     """ Listar a disponibilidade para agendamento de um encaminhamento """
@@ -329,8 +328,6 @@ def agendar_encaminhamento():
         db.session.add(agendamento)
         db.session.commit()
 
-        # GERAR TELA DE CONFIRMAÇÃO
-
         return render_template("menu_paciente.html",
                                confirmacao=1,
                                protocolo=protocolo,
@@ -351,50 +348,53 @@ def gerar_encaminhamento():
     if request.method == 'POST':
         tipo_encaminhamento = request.form.get('rb_tipo_encaminhamento')
         exame = request.form.get('input_tipo_exame')
-        medico = request.form.get('input_especialidade')
-        paciente = request.form.get('input_paciente')
+        id_medico = request.form.get('input_especialidade')
+        id_paciente = request.form.get('input_paciente')
         protocolo = gerar_protocolo('encaminhamento')
         if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_CONSULTA"]:
             encaminhamento = DimEncaminhamento(
                 fk_id_tipo_encaminhamento=tipo_encaminhamento,
-                fk_id_paciente=paciente,
-                fk_id_medico=medico,
+                fk_id_paciente=id_paciente,
+                fk_id_medico=id_medico,
                 protocolo_encaminhamento=protocolo
             )
             db.session.add(encaminhamento)
             db.session.commit()
 
-            encaminhamento_gerado = {
-                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
-                "nome_paciente": DimPaciente.query.get(paciente).nome,
-                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
-                "nome_medico": DimMedico.query.get(medico).nome,
-                "especialidade": DimMedico.query.get(medico).especialidade,
-                "protocolo": protocolo
-            }
-            return render_template("teste_confirmacao_encaminhamento.html",
-                                   encaminhamento=encaminhamento_gerado
+            tipo = DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento
+            paciente = DimPaciente.query.get(id_paciente)
+            medico = DimMedico.query.get(id_medico)
+            protocolo = protocolo
+
+            return render_template("menu_medico.html",
+                                   confirmacao=1,
+                                   tipo=tipo,
+                                   paciente=paciente,
+                                   medico=medico,
+                                   protocolo=protocolo
                                    )
 
         if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_EXAME"]:
             encaminhamento = DimEncaminhamento(
                 fk_id_tipo_encaminhamento=tipo_encaminhamento,
-                fk_id_paciente=paciente,
+                fk_id_paciente=id_paciente,
                 fk_id_exame=exame,
                 protocolo_encaminhamento=protocolo
             )
             db.session.add(encaminhamento)
             db.session.commit()
 
-            encaminhamento_gerado = {
-                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
-                "nome_paciente": DimPaciente.query.get(paciente).nome,
-                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
-                "exame": DimTipoExame.query.get(exame).tipo_exame,
-                "protocolo": protocolo
-            }
-            return render_template("teste_confirmacao_encaminhamento.html",
-                                   encaminhamento=encaminhamento_gerado
+            tipo = DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento
+            paciente = DimPaciente.query.get(id_paciente)
+            exame = DimTipoExame.query.get(exame).tipo_exame
+            protocolo = protocolo
+
+            return render_template("menu_medico.html",
+                                   confirmacao=1,
+                                   tipo=tipo,
+                                   paciente=paciente,
+                                   exame=exame,
+                                   protocolo=protocolo
                                    )
 
     return render_template("gerar_encaminhamento_paciente.html",
@@ -404,10 +404,28 @@ def gerar_encaminhamento():
                            )
 
 
+@app.route('/listar_pacientes', methods=['GET', 'POST'])
+def listar_pacientes():
+    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    pacientes_agendados = (db.session.query(FatoAgendaConsulta)
+                           .join(FatoAgendaConsulta.disponibilidade_consulta)
+                           .order_by(DimDisponibilidadeConsultas.data_disponivel)
+                           .order_by(DimDisponibilidadeConsultas.hora_disponivel)
+                           .filter(FatoAgendaConsulta.fk_id_medico == id_medico)
+                           .all())
+    medico = DimMedico.query.get(id_medico)
+    titulo = "Meus pacientes agendados"
+
+    return render_template("listar_pacientes.html",
+                           agendamentos=pacientes_agendados,
+                           titulo=titulo,
+                           medico=medico
+                           )
+
+
 # @app.route('/listar-consultas')
 # def listar_consultas():
 #     return render_template('modelo_lista_pacientes_exames.html')
-
 
 
 # TESTE
@@ -627,4 +645,3 @@ def teste():
 # @app.route('/calendario')
 # def calendario():
 #     return render_template('calendario.html')
-
