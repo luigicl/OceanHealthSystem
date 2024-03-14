@@ -521,6 +521,141 @@ header{
     left: 67%;
 }
 
-
-
 /* Fim do arquivo adicionando consulta ou exame */
+
+/* Tela 05 */
+
+.opcoes-disponibilidades{
+    width: 100%;
+    margin-top: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+}
+
+.user_info_list{
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    width: 17%;
+    padding: 12px 14px;
+    color:#fff;
+    background-color: #597ab0;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.user_info_list:hover{
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+    font-weight: bold;
+}
+
+/* Fim tela 05 */
+
+/* tela 05 op2 */
+
+.content-login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+#title-login{
+    color:#fff;
+}
+
+.info-content{
+    margin-top: 12rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.mandatory {
+    position: relative;
+    right: 18rem;
+    color: #599dc6;
+}
+
+.form-control{
+    margin-top: 4rem;
+    width: 34%;
+}
+
+.form-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+label {
+    flex-basis: 40%;
+    text-align: left;
+    color: #ccc;
+}
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"] {
+    flex-basis: 60%;
+    padding: 10px;
+    border-radius: 15px;
+    border: 1px solid #ccc;
+}
+.buttons {
+    display: flex;
+    justify-content: flex-end; /* Alinha os botões à direita */
+    width: 100%;
+}
+.button {
+    padding: 10px 20px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px; /* Espaçamento entre os botões */
+}
+
+#accept{
+    border: none;
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #fff;
+    color: #245567;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all .324s;
+}
+
+#accept:hover{
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+}
+
+#cancel{
+    border: 1px solid #fff;
+    margin-right: 1rem;
+    text-decoration: none;
+    background-color: #245567;
+    color: #FFF;
+    font-weight: bold;
+    padding: .6rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all .324s;
+}
+
+#cancel:hover{
+    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+}
+
+/* fim tela 05 op2 */
