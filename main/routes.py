@@ -1,10 +1,11 @@
 from datetime import datetime
 from random import random, randrange, choice
 
-from main import db, app
+from main import db, app, bcrypt
 from main.models import *
 from main.forms import ConsultaForm
 from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask_login import login_required, login_user, logout_user, current_user
 
 
 @app.route("/")
@@ -63,6 +64,14 @@ def cadastrar():
 
 @app.route("/login", methods=['GET', 'POST'])
 def logar():
+    if request.method == 'POST':
+        cpf = request.form.get('cpf')
+        senha = request.form.get('senha')
+        paciente = DimPaciente.query.filter(DimPaciente.cpf == cpf).first()
+        print(paciente)
+        if paciente and bcrypt.check_password_hash(paciente.senha, senha):
+            login_user(paciente)
+            return redirect(url_for("menu_principal_paciente", id_usuario=paciente.id_paciente))
     return render_template("login.html")
 
 
@@ -71,65 +80,19 @@ def menu_principal_medico():
     return render_template("menu_medico.html")
 
 
-def validar_cpf(cpf):
-    """ **** COMENTADO APENAS PARA FACILITAR OS TESTE, PARA PRODUÇÃO REATIVAR ESTE TRECHO **** """
-    # # Verificando o comprimento do CPF ou se todos os digitos são iguais (e.g. 111.111.111-11)
-    # if len(cpf) != 11 or len(set(cpf)) == 1:
-    #     return False
-    # try:
-    #     digitos = list(map(int, cpf))
-    # except ValueError:
-    #     return False
-
-    # ***** AO REATIVAR O TRECHO ACIMA, EXCLUIR AS TRÊS LINHAS ABAIXO  ******
-    if len(cpf) != 11:
-        return False
-    digitos = list(map(int, cpf))
-
-    def calcular_digito(multiplicador):
-        total = 0
-        for d in digitos:
-            if multiplicador >= 2:
-                total += d * multiplicador
-                multiplicador -= 1
-            else:
-                break
-        resto = total % 11
-        if resto < 2:
-            return 0
-        else:
-            return 11 - resto
-
-    # Verificando o primeiro dígito
-    if digitos[9] != calcular_digito(10):
-        return False
-
-    # Verificando o segundo dígito
-    if digitos[10] != calcular_digito(11):
-        return False
-
-    return True
-
-
-def validar_data_nascimento(data_nascimento):
-    data_nascimento_objeto = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
-    hoje = datetime.now().date()
-    dias = (hoje - data_nascimento_objeto).days
-    if (120 * 365) > dias > 0:
-        return True
-    else:
-        return False
-
-
 @app.route('/menu_paciente')
+@login_required
 def menu_principal_paciente():
-    return render_template('menu_paciente.html')
+    id_paciente = current_user.id_paciente
+    paciente = DimPaciente.query.get(id_paciente)
+    return render_template('menu_paciente.html', paciente=paciente)
 
 
 # noinspection PyComparisonWithNone
 @app.route('/encaminhamentos', methods=['GET', 'POST'])
 def listar_encaminhamentos_pendentes():
-    id_paciente = 1  # SERÁ SUBSTITUÍDO PELO ID DO USUÁRIO LOGADO
+    # id_paciente = 1  # SERÁ SUBSTITUÍDO PELO ID DO USUÁRIO LOGADO
+    id_paciente = current_user.id_paciente
     paciente = DimPaciente.query.get(id_paciente)
     encaminhamentos = (DimEncaminhamento.query
                        .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
@@ -160,7 +123,7 @@ def listar_encaminhamentos_pendentes():
 
 @app.route('/minha_agenda')
 def mostrar_agenda_paciente():
-    id_paciente = 1
+    id_paciente = current_user.id_paciente
     paciente = DimPaciente.query.get(id_paciente)
     consultas_agendadas = (db.session.query(FatoAgendaConsulta)
                            .join(FatoAgendaConsulta.disponibilidade_consulta)
@@ -186,6 +149,8 @@ def mostrar_agenda_paciente():
 @app.route('/agendar_clinico')
 def agendar_clinico():
     """ Listar disponibilidade para agendamento de consulta com clínico geral """
+    id_paciente = current_user.id_paciente
+    paciente = DimPaciente.query.get(id_paciente)
     disponibilidade_clinico = (DimDisponibilidadeConsultas.query
                                .filter(DimDisponibilidadeConsultas.fk_id_medico == app.config["ID_CLINICO_GERAL"])
                                .filter(DimDisponibilidadeConsultas.status == None)
@@ -199,8 +164,53 @@ def agendar_clinico():
     return render_template("agendar_consulta.html",
                            disponibilidade_clinico=disponibilidade_clinico,
                            medico=medico,
+                           paciente=paciente,
                            titulo=titulo
                            )
+
+
+@app.route('/agendamento', methods=['GET'])
+def agendamento_clinico():
+    """ Agendamento de consulta com Clínico Geral """
+    id_disponibilidade = request.args.get("disponibilidade")
+    id_paciente = current_user.id_paciente
+    paciente = DimPaciente.query.get(id_paciente)
+    id_medico = app.config["ID_CLINICO_GERAL"]
+    medico = DimMedico.query.get(id_medico)
+    protocolo = gerar_protocolo('consulta')
+
+    agendamento = FatoAgendaConsulta(
+        fk_id_medico=id_medico,
+        fk_id_paciente=id_paciente,
+        fk_id_disponibilidade_consulta=id_disponibilidade,
+        protocolo_consulta=protocolo,
+        medico=medico,
+        status="Pendente"
+    )
+
+    disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+    disponibilidade.status = "indisponivel"
+
+    db.session.add(agendamento)
+    db.session.commit()
+
+    return render_template("menu_paciente.html",
+                           confirmacao=1,
+                           protocolo=protocolo,
+                           medico=medico,
+                           paciente=paciente,
+                           disponibilidade=disponibilidade
+                           )
+
+
+
+    # GERAR TELA DE CONFIRMAÇÃO
+
+
+
+
+
+
 
 
 @app.route('/selecionar_disponibilidade', methods=['GET', 'POST'])
@@ -214,6 +224,8 @@ def selecionar_disponibilidade():
         id_tipo_encaminhamento = encaminhamento.fk_id_tipo_encaminhamento
         id_medico = encaminhamento.fk_id_medico
         id_exame = encaminhamento.fk_id_exame
+        id_paciente = current_user.id_paciente
+        paciente = DimPaciente.query.get(id_paciente)
 
         if id_medico is not None:
             disponibilidades_consultas = (DimDisponibilidadeConsultas.query
@@ -227,6 +239,7 @@ def selecionar_disponibilidade():
                                    disponibilidades_consultas=disponibilidades_consultas,
                                    medico=medico,
                                    titulo=titulo,
+                                   paciente=paciente,
                                    id_encaminhamento=id_encaminhamento
                                    )
 
@@ -242,6 +255,7 @@ def selecionar_disponibilidade():
                                    disponibilidades_exames=disponibilidades_exames,
                                    exame=exame,
                                    titulo=titulo,
+                                   paciente=paciente,
                                    id_encaminhamento=id_encaminhamento
                                    )
 
@@ -256,8 +270,8 @@ def agendar_encaminhamento():
     print("id encaminhamentoo: " + id_encaminhamento)
     id_disponibilidade = request.form.get("id_disponibilidade")
     tipo_agendamento = request.form.get("tipo_agendamento")
-    # id_paciente = id do paciente logado
-    id_paciente = choice([1, 2, 3, 4, 5])
+    id_paciente = current_user.id_paciente
+    paciente = DimPaciente.query.get(id_paciente)
 
     if tipo_agendamento == "consulta":
         protocolo = gerar_protocolo('consulta')
@@ -288,6 +302,7 @@ def agendar_encaminhamento():
                                confirmacao=1,
                                protocolo=protocolo,
                                medico=medico,
+                               paciente=paciente,
                                disponibilidade=disponibilidade
                                )
 
@@ -320,6 +335,7 @@ def agendar_encaminhamento():
                                confirmacao=1,
                                protocolo=protocolo,
                                exame=exame,
+                               paciente=paciente,
                                disponibilidade=disponibilidade
 
                                )
@@ -327,13 +343,75 @@ def agendar_encaminhamento():
     return redirect(url_for("agendar_clinico"))
 
 
-@app.route('/listar-consultas')
-def listar_consultas():
-    return render_template('modelo_lista_pacientes_exames.html')
+@app.route('/gerar_encaminhamento', methods=['GET', 'POST'])
+def gerar_encaminhamento():
+    exames = DimTipoExame.query.all()
+    medicos = DimMedico.query.filter(DimMedico.especialidade != "Clínico Geral").all()
+    pacientes = DimPaciente.query.order_by(DimPaciente.nome).all()
+    if request.method == 'POST':
+        tipo_encaminhamento = request.form.get('rb_tipo_encaminhamento')
+        exame = request.form.get('input_tipo_exame')
+        medico = request.form.get('input_especialidade')
+        paciente = request.form.get('input_paciente')
+        protocolo = gerar_protocolo('encaminhamento')
+        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_CONSULTA"]:
+            encaminhamento = DimEncaminhamento(
+                fk_id_tipo_encaminhamento=tipo_encaminhamento,
+                fk_id_paciente=paciente,
+                fk_id_medico=medico,
+                protocolo_encaminhamento=protocolo
+            )
+            db.session.add(encaminhamento)
+            db.session.commit()
+
+            encaminhamento_gerado = {
+                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
+                "nome_paciente": DimPaciente.query.get(paciente).nome,
+                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
+                "nome_medico": DimMedico.query.get(medico).nome,
+                "especialidade": DimMedico.query.get(medico).especialidade,
+                "protocolo": protocolo
+            }
+            return render_template("teste_confirmacao_encaminhamento.html",
+                                   encaminhamento=encaminhamento_gerado
+                                   )
+
+        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_EXAME"]:
+            encaminhamento = DimEncaminhamento(
+                fk_id_tipo_encaminhamento=tipo_encaminhamento,
+                fk_id_paciente=paciente,
+                fk_id_exame=exame,
+                protocolo_encaminhamento=protocolo
+            )
+            db.session.add(encaminhamento)
+            db.session.commit()
+
+            encaminhamento_gerado = {
+                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
+                "nome_paciente": DimPaciente.query.get(paciente).nome,
+                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
+                "exame": DimTipoExame.query.get(exame).tipo_exame,
+                "protocolo": protocolo
+            }
+            return render_template("teste_confirmacao_encaminhamento.html",
+                                   encaminhamento=encaminhamento_gerado
+                                   )
+
+    return render_template("gerar_encaminhamento_paciente.html",
+                           exames=exames,
+                           medicos=medicos,
+                           pacientes=pacientes
+                           )
+
+
+# @app.route('/listar-consultas')
+# def listar_consultas():
+#     return render_template('modelo_lista_pacientes_exames.html')
+
 
 
 # TESTE
-@app.route('/gerar_encaminhamento', methods=['GET', 'POST'])
+@app.route('/teste_gerar_encaminhamento', methods=['GET', 'POST'])
 def teste_gerar_encaminhamento():
     exames = DimTipoExame.query.all()
     medicos = DimMedico.query.filter(DimMedico.especialidade != "Clínico Geral").all()
@@ -416,34 +494,6 @@ def teste_listar_encaminhamentos():
                            )
 
 
-# TESTE
-@app.route('/agendamento', methods=['GET'])
-def teste_agendar():
-    """ Agendamento de consulta com Clínico Geral
-        falta implementar lógica para pegar o ID do paciente através do login """
-    id_disponibilidade = request.args.get("disponibilidade")
-    # id_paciente = id do paciente logado
-    id_paciente = choice([1, 2, 3, 4, 5])
-    id_medico = app.config["ID_CLINICO_GERAL"]
-    protocolo = gerar_protocolo('consulta')
-
-    agendamento = FatoAgendaConsulta(
-        fk_id_medico=id_medico,
-        fk_id_paciente=id_paciente,
-        fk_id_disponibilidade_consulta=id_disponibilidade,
-        protocolo_consulta=protocolo,
-        status="Pendente"
-    )
-
-    disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
-    disponibilidade.status = "indisponivel"
-
-    db.session.add(agendamento)
-    db.session.commit()
-
-    return redirect(url_for("agendar_clinico"))
-
-
 def gerar_protocolo(tipo):
     def gerar_numero():
         numero = randrange(111111111, 999999999)
@@ -469,6 +519,56 @@ def gerar_protocolo(tipo):
             numero = gerar_numero()
         protocolo = "X" + str(numero)
         return protocolo
+
+
+def validar_cpf(cpf):
+    """ **** COMENTADO APENAS PARA FACILITAR OS TESTE, PARA PRODUÇÃO REATIVAR ESTE TRECHO **** """
+    # # Verificando o comprimento do CPF ou se todos os digitos são iguais (e.g. 111.111.111-11)
+    # if len(cpf) != 11 or len(set(cpf)) == 1:
+    #     return False
+    # try:
+    #     digitos = list(map(int, cpf))
+    # except ValueError:
+    #     return False
+
+    # ***** AO REATIVAR O TRECHO ACIMA, EXCLUIR AS TRÊS LINHAS ABAIXO  ******
+    if len(cpf) != 11:
+        return False
+    digitos = list(map(int, cpf))
+
+    def calcular_digito(multiplicador):
+        total = 0
+        for d in digitos:
+            if multiplicador >= 2:
+                total += d * multiplicador
+                multiplicador -= 1
+            else:
+                break
+        resto = total % 11
+        if resto < 2:
+            return 0
+        else:
+            return 11 - resto
+
+    # Verificando o primeiro dígito
+    if digitos[9] != calcular_digito(10):
+        return False
+
+    # Verificando o segundo dígito
+    if digitos[10] != calcular_digito(11):
+        return False
+
+    return True
+
+
+def validar_data_nascimento(data_nascimento):
+    data_nascimento_objeto = datetime.strptime(data_nascimento, "%Y-%m-%d").date()
+    hoje = datetime.now().date()
+    dias = (hoje - data_nascimento_objeto).days
+    if (120 * 365) > dias > 0:
+        return True
+    else:
+        return False
 
 
 @app.route('/teste')

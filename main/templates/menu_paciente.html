@@ -15,21 +15,22 @@
             <!-- Área das Info -->
             <div class="infos">
                 <div class="user_img">
-                    <div class="img_test">
+                    <img src="{{ url_for('static', filename='images/default.png') }}" alt="">
+<!--                    <div class="img_test">-->
 
-                    </div>
+<!--                    </div>-->
                 </div>
                 <div class="user_info">
-                    <h2 class="mb-0">Anthony Pinho</h2>
-                    <p class="mb-0">Paciente - Carteira Digital</p>
-                    <p class="mb-0">12344556788</p>
+                    <h2 class="mb-0">{{paciente.nome}}</h2>
+                    <p class="mb-0">{{paciente.role}} - Carteira Digital</p>
+                    <p class="mb-0">CPF: {{paciente.cpf}}</p>
                 </div>
             </div>
             <!-- Fim da Área das Info -->
 
-            <div class="footer_card">
-                <a href="#">Clique aqui para acessar seu perfil</a>
-            </div>
+<!--            <div class="footer_card">-->
+<!--                <a href="#">Clique aqui para acessar seu perfil</a>-->
+<!--            </div>-->
         </div>
     </header>
     <section class="services_area">
@@ -62,10 +63,11 @@
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">O agendamento foi realizado com sucesso!</h5>
+                            <h5 class="modal-title fs-4" id="exampleModalLabel">O agendamento foi realizado com sucesso!</h5><br>
                         </div>
                         <div class="modal-body">
                             {% if medico %}
+                                <p class="mb-3 lead">Anote o seu protocolo!</p>
                                 <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
                                 <p class="mb-1">Data: {{disponibilidade.data_disponivel.strftime("%d/%m/%Y")}} - {{disponibilidade.dia_semana}}</p>
                                 <p class="mb-1">Horário: {{disponibilidade.hora_disponivel.strftime("%H:%M")}}</p>
@@ -73,6 +75,7 @@
                                 <p class="mb-1">Medico: {{medico.pronome_tratamento}} {{medico.nome}}</p>
                             {% endif %}
                             {% if exame %}
+                                <p class="mb-3 lead">Anote o seu protocolo!</p>
                                 <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
                                 <p class="mb-1">Data: {{disponibilidade.data_disponivel.strftime("%d/%m/%Y")}} - {{disponibilidade.dia_semana}}</p>
                                 <p class="mb-1">Horário: {{disponibilidade.hora_disponivel.strftime("%H:%M")}}</p>

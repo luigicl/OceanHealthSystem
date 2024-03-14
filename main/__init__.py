@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import LoginManager
+from flask_bcrypt import Bcrypt
 
 load_dotenv()
 
@@ -16,7 +18,10 @@ app.config["ID_ENCAMINHAMENTO_EXAME"] = "2"
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 
 db = SQLAlchemy(app)
-migrate = Migrate(app, db)
+# migrate = Migrate(app, db)
+bcrypt = Bcrypt(app)
+login_manager = LoginManager(app)
+login_manager.login_view = "logar"  # em qual pagina será executado o login
 
 app.app_context().push()
 

@@ -14,23 +14,24 @@
             <!-- Área das Info -->
             <div class="infos">
                 <div class="user_img">
-                    <div class="img_test">
+                    <img src="{{ url_for('static', filename='images/default.png') }}" alt="">
+<!--                    <div class="img_test">-->
 
-                    </div>
+<!--                    </div>-->
                 </div>
                 <div class="user_info">
                     <a href="/menu_paciente">
-                        <h2 class="mb-0">Anthony Pinho</h2>
-                        <p class="mb-0">Paciente - Carteira Digital</p>
-                        <p class="mb-0">12344556788</p>
+                        <h2 class="mb-0">{{paciente.nome}}</h2>
+                        <p class="mb-0">{{paciente.role}} - Carteira Digital</p>
+                        <p class="mb-0">CPF: {{paciente.cpf}}</p>
                     </a>
                 </div>
             </div>
             <!-- Fim da Área das Info -->
 
-            <div class="footer_card">
-                <a href="#">Clique aqui para acessar seu perfil</a>
-            </div>
+<!--            <div class="footer_card">-->
+<!--                <a href="#">Clique aqui para acessar seu perfil</a>-->
+<!--            </div>-->
         </div>
     </header>
 
