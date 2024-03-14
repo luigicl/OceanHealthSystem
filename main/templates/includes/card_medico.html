@@ -1,0 +1,28 @@
+<div class="card">
+    <!-- Área das Info -->
+    <div class="infos">
+        <div class="user_img">
+            <img src="{{ url_for('static', filename='images/default.png') }}" alt="">
+    <!--                    <div class="img_test">-->
+
+    <!--                    </div>-->
+        </div>
+        <div class="user_info">
+            <h2 class="mb-0">{{medico.nome}}</h2>
+            <p class="mb-0">{{medico.especialidade}} - Carteira Digital</p>
+            <p class="mb-3">CRM: {{medico.crm}}</p>
+            <a class="card-links" href="{{ url_for('menu_principal_medico') }}">
+                <span class="card-links">Menu Principal</span>
+            </a>
+<!--            <span>   |   </span>-->
+<!--            <a  href="{{ url_for('logout') }}">-->
+<!--                <span class="card-links">Sair</span>-->
+<!--            </a>-->
+        </div>
+    </div>
+    <!-- Fim da Área das Info -->
+
+    <!--   <div class="footer_card"> -->
+    <!--   <a href="#">Clique aqui para acessar seu perfil</a> -->
+    <!--   </div> -->
+</div>

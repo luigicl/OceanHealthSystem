@@ -11,27 +11,7 @@
 </head>
 <body>
     <header>
-        <div class="card">
-            <!-- Área das Info -->
-            <div class="infos">
-                <div class="user_img">
-                    <img src="{{ url_for('static', filename='images/default.png') }}" alt="">
-<!--                    <div class="img_test">-->
-
-<!--                    </div>-->
-                </div>
-                <div class="user_info">
-                    <h2 class="mb-0">{{paciente.nome}}</h2>
-                    <p class="mb-0">{{paciente.role}} - Carteira Digital</p>
-                    <p class="mb-0">CPF: {{paciente.cpf}}</p>
-                </div>
-            </div>
-            <!-- Fim da Área das Info -->
-
-<!--            <div class="footer_card">-->
-<!--                <a href="#">Clique aqui para acessar seu perfil</a>-->
-<!--            </div>-->
-        </div>
+        {% include 'includes/card_paciente.html' %}
     </header>
     <section class="services_area">
         <h2 id="title_service">O que você pretende fazer hoje?</h2>

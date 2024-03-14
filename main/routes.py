@@ -86,7 +86,9 @@ def logout():
 
 @app.route("/menu_medico")
 def menu_principal_medico():
-    return render_template("menu_medico.html")
+    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    medico = DimMedico.query.get(id_medico)
+    return render_template("menu_medico.html", medico=medico)
 
 
 @app.route('/menu_paciente')
@@ -345,6 +347,10 @@ def gerar_encaminhamento():
     exames = DimTipoExame.query.all()
     medicos = DimMedico.query.filter(DimMedico.especialidade != "Clínico Geral").all()
     pacientes = DimPaciente.query.order_by(DimPaciente.nome).all()
+
+    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    medico = DimMedico.query.get(id_medico)
+
     if request.method == 'POST':
         tipo_encaminhamento = request.form.get('rb_tipo_encaminhamento')
         exame = request.form.get('input_tipo_exame')
@@ -400,7 +406,8 @@ def gerar_encaminhamento():
     return render_template("gerar_encaminhamento_paciente.html",
                            exames=exames,
                            medicos=medicos,
-                           pacientes=pacientes
+                           pacientes=pacientes,
+                           medico=medico
                            )
 
 
