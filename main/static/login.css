@@ -5,16 +5,18 @@
 }
 
 body {
-    height: 100vh;
+        height: 100vh;
     width: 100%;
     font-family: Arial, sans-serif;
     padding: 20px;
     background-color: #245567;
     color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .welcome-text{
-    margin-top: 20rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -29,12 +31,16 @@ body {
     margin-top: 2rem;
 }
 
+
+
 .content-login{
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 2rem;
+    height: 100vh;
+    width: 60%;
 }
 
 #title-login{
@@ -42,7 +48,7 @@ body {
 }
 
 .info-content{
-    margin-top: 9rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -58,33 +64,37 @@ body {
 
 .form-control{
     margin-top: 1rem;
-    width: 34%;
+    width: 50%;
 }
 
 .form-group {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 18px;
+    margin-bottom: 10px;
 }
 
 label {
-    flex-basis: 40%;
+    flex-basis: 35%;
     text-align: left;
 }
 input[type="text"],
 input[type="date"],
 input[type="email"],
+input[type="password"],
 input[type="tel"] {
-    flex-basis: 60%;
+    flex-basis: 65%;
     padding: 10px;
     border-radius: 15px;
     border: 1px solid #ccc;
 }
+
 .buttons {
     display: flex;
     justify-content: flex-end; /* Alinha os botões à direita */
     width: 100%;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
 }
 .button {
     padding: 10px 20px;
@@ -92,9 +102,10 @@ input[type="tel"] {
     border: none;
     cursor: pointer;
     margin-left: 10px; /* Espaçamento entre os botões */
+    font-weight: bold;
 }
 
-#accept{
+.btn-accept{
     border: none;
     margin-right: 1rem;
     text-decoration: none;
@@ -107,11 +118,11 @@ input[type="tel"] {
     transition: all .324s;
 }
 
-#accept:hover{
-    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+.btn-accept:hover{
+    box-shadow: 0px 0px 10px #97dedf;
 }
 
-#cancel{
+.btn-cancel{
     border: 1px solid #fff;
     margin-right: 1rem;
     text-decoration: none;
@@ -125,8 +136,8 @@ input[type="tel"] {
     transition: all .324s;
 }
 
-#cancel:hover{
-    box-shadow: 0px 0px 6px rgba(255, 255, 255, .3);
+.btn-cancel:hover{
+    box-shadow: 0px 0px 10px #97dedf;
 }
 
 .required-star {
@@ -148,6 +159,15 @@ input[type="tel"] {
     background-image: linear-gradient(to left, #ff512f 0%, #dd2476 100%);
     color: white;
 }
-.button:hover {
-    opacity: 0.8;
+
+
+.modal-content{
+    background-color: #599dc6;
 }
+
+.toggle-password{
+    display: flex;
+    justify-content: flex-end;
+    margin-top:15px;
+}
+

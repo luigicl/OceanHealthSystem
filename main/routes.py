@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    return render_template("home_new.html")
 
 
 @app.route("/cadastrar", methods=['GET', 'POST'])
@@ -58,7 +58,17 @@ def cadastrar():
         # else:
         #     mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
         #     return render_template("cadastrar.html", mensagem=mensagem)
-    return render_template("cadastrar.html")
+    return render_template("cadastrar_new.html")
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def logar():
+    return render_template("login.html")
+
+
+@app.route("/menu_medico")
+def menu_principal_medico():
+    return render_template("menu_medico.html")
 
 
 def validar_cpf(cpf):

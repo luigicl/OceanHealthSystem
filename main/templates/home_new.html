@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bem-vindo</title>
+    {% include 'includes/bootstrap.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+    <div class="content-login">
+        <div class="welcome-text">
+            <h1>Bem-vindo ao sistema OHS</h1>
+            <p class="option-text">Selecione uma opção</p>
+        </div>
+        <div class="btn-action-login">
+            <button class="btn-accept button" type="button" id="accept" data-bs-toggle="modal" data-bs-target="#modal_conf_ubs">Primeiro acesso?</button>
+            <a href="{{ url_for('logar') }}">
+                <button class="btn-cancel button" id="cancel">Já possui cadastro? Faça o login</button>
+            </a>
+        </div>
+    </div>
+
+
+    <!-- Modal de confirmação pré-cadastro na UBS-->
+    <div class="modal fade" id="modal_conf_ubs" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-body">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="staticBackdropLabel">Atenção</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <p class="question">Possui o cadastro na UBS?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-cancel button" data-bs-toggle="modal" data-bs-target="#modal_msg_ubs">Não</button>
+              <a href="{{ url_for('cadastrar') }}">
+                  <button type="button" class="btn-accept button">Sim</button>
+              </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- Modal de msg para realizar pré-cadastro-->
+    <div class="modal fade" id="modal_msg_ubs"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            Dirija-se a um centro de Saúde para realizar seu pré-cadastro.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-accept button" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>
