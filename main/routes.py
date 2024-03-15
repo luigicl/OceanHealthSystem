@@ -111,9 +111,13 @@ def validar_data_nascimento(data_nascimento):
         return False
 
 
-@app.route('/menu_paciente')
+@app.route('/mpaciente')
 def menu_principal_paciente():
     return render_template('menu_paciente.html')
+
+@app.route('/rotateste')
+def rotateste():
+    return render_template("t3.html")
 
 
 @app.route('/encaminhamentos', methods=['GET', 'POST'])

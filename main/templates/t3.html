@@ -10,7 +10,7 @@
     <div class="content-login">
 
         <div class="info-content">
-            <h1 id="title-login">Cadastro do sistema</h1>
+            <h1 id="title-login">Cadastro no sistema</h1>
             <p class="instructions">Preencha os campos vazios abaixo com os seus dados e certifique-se de todos serem dados autênticos. Ao final, você receberá os dados de sua carteirinha de acesso.</p>
             <p class="mandatory">Os campos com * são obrigatórios!</p>
         </div>
@@ -48,15 +48,42 @@
                     <input type="text" id="logradouro" name="logradouro" placeholder="Casa, Apartamento..." required>
                 </div>
 
-                <div class="form-group">
-                    <label for="logradouro">Número <span class="required-star">*</span></label>
-                    <input type="text" id="numero" name="numero" placeholder="..." required>
+                <div class="two-items">
+                    <div class="form-group">
+                        <label for="logradouro">Número <span class="required-star">*</span></label>
+                        <input type="text" id="numero" name="numero" placeholder="..." required>
+                    </div>
+    
+                    <div class="form-group">
+                        <label for="logradouro">Complemento <span class="required-star">*</span></label>
+                        <input type="text" id="complemento" name="complemento" placeholder="..." required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="logradouro">Complemento <span class="required-star">*</span></label>
-                    <input type="text" id="complemento" name="complemento" placeholder="..." required>
+                <div class="two-items">
+                    <div class="form-group">
+                        <label for="bairro">Bairro <span class="required-star">*</span></label>
+                        <input type="text" id="bairro" name="bairro" placeholder="..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cidade">Cidade <span class="required-star">*</span></label>
+                        <input type="text" id="cidade" name="cidade" placeholder="..." required>
+                    </div>
                 </div>
+
+                <div class="two-items">
+                    <div class="form-group">
+                        <label for="estado">Estado <span class="required-star">*</span></label>
+                        <input type="text" id="estado" name="estado" placeholder="..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cep">CEP <span class="required-star">*</span></label>
+                        <input type="text" id="cep" name="cep" placeholder="..." required>
+                    </div>
+                </div>
+
         
                 <div class="buttons">
                     <button type="button" id="cancel" onclick="window.history.back();">Cancelar</button>

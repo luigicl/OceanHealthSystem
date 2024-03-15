@@ -467,6 +467,10 @@ header{
     display: none;
 }
 
+.two-items{
+    display: flex;
+}
+
 .form-group{
     margin-top: 10px;
 }
