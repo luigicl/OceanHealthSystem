@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="t5.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="card">
+                <!-- Área das Info -->
+                <div class="infos">
+                    <div class="user_img">
+                        <div class="img_test">
+    
+                        </div>
+                    </div>
+                    <div class="user_info">
+                        <h2>Anthony Pinho</h2>
+                        <p>Médico - Carteira Digital</p>
+                        <p>12344556788</p>
+                    </div>
+                </div>
+                <!-- Fim da Área das Info -->
+    
+                <div class="footer_card">
+                    <a href="#">Clique aqui para acessar seu perfil</a>
+                </div>
+            </div>
+        </header>
+
+        <section class="services_area">
+            <div class="info-content">
+                <h1 id="title-login">Insira sua disponibilidade</h1>
+            </div>
+        
+            <div class="form-control">  
+                <form method="POST">
+                    <div class="form-group">
+                        <label for="nomeEspecialidade">Especialidade</label>
+                        <input type="text" id="nomeEspecialidade" name="nomeEspecialidade" pattern="^[A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{3,}(?: [A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{2,})(?: [A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{1,}){0,20}$" placeholder="Digite a especialidade" required>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="dataMarcada">Data</label>
+                        <input type="date" id="dataMarcada" name="dataMarcada" required>
+                    </div>
+            
+                    <div class="form-group">
+                        <label for="celular">Hora Início</label>
+                        <!--   Melhorar essa REGEX tentei "^\([1-9]{2}\)(?:[2-8]|9[0-9])[0-9]{3}\-[0-9]{4}$" e "\(?(\d{3})\)?[-\.\s]?(\d{3})[-\.\s]?(\d{4})"    -->
+                        <input type="tel" id="celular" name="celular" pattern="\d{11}" maxlength="11" placeholder="Digite somente os números e com DDD" required>
+                    </div>
+            
+                    <div class="buttons">
+                        <button type="button" id="cancel" onclick="window.history.back();">Cancelar</button>
+                        <button type="submit" id="accept">Enviar</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+        
+    </div>
+</body>
+</html>

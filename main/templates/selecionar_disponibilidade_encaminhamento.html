@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% include 'includes/bootstrap.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div>
+        <header>
+            <div class="card">
+                <!-- Área das Info -->
+                <div class="infos">
+                    <div class="user_img">
+                        <img src="{{ url_for('static', filename='images/default.png') }}" alt="">
+<!--                        <div class="img_test">-->
+<!--    -->
+<!--                        </div>-->
+                    </div>
+                    <div class="user_info">
+                        <a href="/menu_paciente">
+                            <h2 class="mb-0">{{paciente.nome}}</h2>
+                            <p class="mb-0">{{paciente.role}} - Carteira Digital</p>
+                            <p class="mb-0">CPF: {{paciente.cpf}}</p>
+                        </a>
+                    </div>
+                </div>
+                <!-- Fim da Área das Info -->
+    
+<!--                <div class="footer_card">-->
+<!--                    <a href="#">Clique aqui para acessar seu perfil</a>-->
+<!--                </div>-->
+            </div>
+        </header>
+
+        <section class="services_area">
+            {% if disponibilidades_consultas %}
+
+                <h2 class="mb-4" id="title_service">
+                    {{ titulo }}
+                </h2>
+                <div class="list_users">
+                    {% for horario in disponibilidades_consultas %}
+                        <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{horario.id_disponibilidade_consulta}}">
+                            <div class="date-consult">
+                                <span id="date_list">{{horario.data_disponivel.strftime("%d/%m/%Y")}}</span>
+                                <span id="day_list">{{horario.dia_semana}}</span>
+                            </div>
+                            <div class="user_more_info">
+                                <span>{{medico.pronome_tratamento}} {{medico.nome}}</span>
+                                <!-- Usar como modelo e passar apenas os dados que precisa, no caso só um parametro pra e apagar o outro -->
+                                <span>{{horario.hora_disponivel.strftime("%H:%M")}}</span>
+                            </div>
+                        </a>
+
+                        <!-- Modal confirmar agendamento -->
+                        <div class="modal fade" id="confirmation{{horario.id_disponibilidade_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Você deseja confirmar o agendamento abaixo?</h1>
+                                <!--    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                              </div>
+                              <div class="modal-body">
+                                <!--     <h5 class="fs-5">Você deseja confirmar o agendamento abaixo:</h5>-->
+                                <p class="mb-1">Data: {{horario.data_disponivel.strftime("%d/%m/%Y")}} - {{horario.dia_semana}}</p>
+                                <p class="mb-1">Horário: {{horario.hora_disponivel.strftime("%H:%M")}}</p>
+                                <p class="mb-1">Especialidade: {{medico.especialidade}}</p>
+                                <p class="mb-1">Medico: Dr(a). {{medico.nome}}</p>
+
+                              </div>
+                              <div class="modal-footer">
+                                    <!--      <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
+                                    <!--      <a href="/agendar_encaminhamento?disponibilidade=horario.id_disponibilidade_consulta" type="button" class="op-good">Confirmar</a>-->
+                                  <form method="post" action="{{ url_for('agendar_encaminhamento') }}" class="inline">
+                                    <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
+                                    <input type="hidden" name="id_encaminhamento" value="{{id_encaminhamento}}">
+                                    <input type="hidden" name="tipo_agendamento" value="consulta">
+                                    <button type="submit" name="id_disponibilidade" value="{{horario.id_disponibilidade_consulta}}" class="op-good">
+                                        Confirmar
+                                      </button>
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--     fim do Modal     -->
+
+                    {% endfor%}
+                </div>
+            {% endif %}
+
+            {% if disponibilidades_exames %}
+
+                <h2 class="mb-4" id="title_service">
+                    {{ titulo }}
+                </h2>
+                <div class="list_users">
+                    {% for horario in disponibilidades_exames %}
+                        <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{horario.id_disponibilidade_exame}}">
+                            <div class="date-consult">
+                                <span id="date_list">{{horario.data_disponivel.strftime("%d/%m/%Y")}}</span>
+                                <span id="day_list">{{horario.dia_semana}}</span>
+                            </div>
+                            <div class="user_more_info">
+<!--                                <span>medico.pronome_tratamento medico.nome</span>-->
+                                <!-- Usar como modelo e passar apenas os dados que precisa, no caso só um parametro pra e apagar o outro -->
+                                <span>{{horario.hora_disponivel.strftime("%H:%M")}}</span>
+                            </div>
+                        </a>
+
+                        <!-- Modal confirmar agendamento -->
+                        <div class="modal fade" id="confirmation{{horario.id_disponibilidade_exame}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="staticBackdropLabel">Você deseja confirmar o agendamento abaixo?</h1>
+                                <!--    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>-->
+                              </div>
+                              <div class="modal-body">
+                                <!--     <h5 class="fs-5">Você deseja confirmar o agendamento abaixo:</h5>-->
+                                <p class="mb-1">Data: {{horario.data_disponivel.strftime("%d/%m/%Y")}} - {{horario.dia_semana}}</p>
+                                <p class="mb-1">Horário: {{horario.hora_disponivel.strftime("%H:%M")}}</p>
+                                <p class="mb-1">Exame: {{exame.tipo_exame}}</p>
+
+
+                              </div>
+                              <div class="modal-footer">
+                                    <!--      <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
+                                    <!--      <a href="/agendar_encaminhamento?disponibilidade=horario.id_disponibilidade_consulta" type="button" class="op-good">Confirmar</a>-->
+                                  <form method="post" action="{{ url_for('agendar_encaminhamento') }}" class="inline">
+                                        <!--    <input type="hidden" name="extra_submit_param" value="extra_submit_value">-->
+                                      <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
+                                      <input type="hidden" name="id_encaminhamento" value="{{id_encaminhamento}}">
+                                      <input type="hidden" name="tipo_agendamento" value="exame">
+                                      <button type="submit" name="id_disponibilidade" value="{{horario.id_disponibilidade_exame}}" class="op-good">
+                                        Confirmar
+                                      </button>
+                                  </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!--     fim do Modal     -->
+
+                    {% endfor%}
+                </div>
+            {% endif %}
+
+
+        </section>
+        
+    </div>
+</body>
+</html>

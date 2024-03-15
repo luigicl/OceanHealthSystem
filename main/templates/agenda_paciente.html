@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHS - Minha Agenda</title>
+    {% include 'includes/bootstrap.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div>
+        <header>
+            {% include 'includes/card_paciente.html' %}
+        </header>
+        <section class="services_area">
+            <h2 id="title_service">
+            </h2>
+            <p id="subtitle_service">Clique no agendamento para detalhes e ações</p>
+            <div class="list_users">
+                <div class="type_schedule">
+                    <div class="">
+                        <span id="tipo-consulta">Consultas agendadas</span>
+                    </div>
+                </div>
+                {% for consulta in consultas %}
+                    <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#details{{consulta.id_agendamento_consulta}}">
+                        <div class="date-consult">
+                            <span id="date_list">{{consulta.disponibilidade_consulta.data_disponivel.strftime("%d/%m/%Y")}}</span>
+                            <span id="day_list">{{consulta.disponibilidade_consulta.dia_semana}}</span>
+                        </div>
+                        <div class="user_more_info">
+                            <div class="name-date text-center">
+                                <span>Consulta {{consulta.medico.especialidade}}</span>
+                                <span>{{consulta.disponibilidade_consulta.hora_disponivel.strftime("%H:%M")}}</span>
+                            </div>
+                            <div class="status-user mt-2">
+                                <!-- As classes pra usar aqui são pending(amarelo), canceled(cancelaada) e finished(finalizada) -->
+                                <span class="{{consulta.status}}">{{consulta.status}}</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Modal detalhes e ações consultas -->
+                    <div class="modal fade" id="details{{consulta.id_agendamento_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabelConsultas">Detalhes do agendamento:</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+    <!--                        <h5 class="fs-5">Você deseja prosseguir com o agendamento do encaminhamento abaixo:</h5>-->
+                            <p class="mb-1">Protocolo: {{consulta.protocolo_consulta}}</p>
+                            <p class="mb-1">Data: {{consulta.disponibilidade_consulta.data_disponivel.strftime("%d/%m/%Y")}}</p>
+                            <p class="mb-1">Horário: {{consulta.disponibilidade_consulta.hora_disponivel.strftime("%H:%M")}}</p>
+                            <p class="mb-1">Especialidade: Consulta {{consulta.medico.especialidade}}</p>
+                            <p class="mb-1">Medico: {{consulta.medico.pronome_tratamento}} {{consulta.medico.nome}}</p>
+                          </div>
+                          <div class="modal-footer">
+                              {% if consulta.status == "Pendente" %}
+                                <button type="button" class="op-good" name="cancel_button" data-bs-toggle="modal" data-bs-target="#delete{{consulta.id_agendamento_consulta}}" >
+                                    Cancelar
+                                </button>
+                                <form method="post" action="{{ url_for('reagendar') }}" class="inline">
+                                    <input type="hidden" name="tipo_agendamento" value="consulta">
+                                    <button type="submit" name="id_agendamento" value="{{consulta.id_agendamento_consulta}}" class="op-good">
+                                        Reagendar
+                                    </button>
+                                </form>
+                              {% endif %}
+                              {% if consulta.status == "Cancelado" %}
+                                <form method="post" action="{{ url_for('reagendar') }}" class="inline">
+                                    <input type="hidden" name="tipo_agendamento" value="consulta">
+                                    <button type="submit" name="id_agendamento" value="{{consulta.id_agendamento_consulta}}" class="op-good">
+                                        Reagendar
+                                    </button>
+                                </form>
+                              {% endif %}
+                              <button type="button" class="op-bad" data-bs-dismiss="modal">
+                                Voltar
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--     fim do Modal detalhes e ações consultas     -->
+                    <!-- Modal confirmar cancelamento consulta -->
+                    <div class="modal fade" id="delete{{consulta.id_agendamento_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabelCancelamentoConsulta">Confirmação de cancelamento</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p class="mb-1">Você tem certeza de que deseja cancelar este agendamento? Isso irá excluir o seu
+                                encaminhamento e você precisará retornar com seu médico para emissão de um novo encaminhamento.
+                            </p>
+                            <p>
+                                Caso não seja o que você deseja, utilize a opção de reagendar, se estiver disponível.
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="op-bad" data-bs-dismiss="modal">
+                                Voltar
+                            </button>
+                            <form method="post" action="{{ url_for('cancelar_agendamento') }}" class="inline">
+                                <input type="hidden" name="tipo_agendamento" value="consulta">
+                                <button type="submit" name="id_agendamento" value="{{consulta.id_agendamento_consulta}}" class="op-good">
+                                    Confirmar cancelamento
+                                </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--     fim do Modal confirmar cancelamento consulta   -->
+
+
+
+
+                {% endfor %}
+
+                <div class="type_schedule">
+                    <div class="">
+                        <span id="tipo-exame">Exames agendados</span>
+                    </div>
+                </div>
+                {% for exame in exames %}
+                    <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#details{{exame.id_agenda_exame}}">
+                        <div class="date-consult">
+                            <span id="date_list">{{exame.disponibilidade_exame.data_disponivel.strftime("%d/%m/%Y")}}</span>
+                            <span id="day_list">{{exame.disponibilidade_exame.dia_semana}}</span>
+                        </div>
+                        <div class="user_more_info">
+                            <div class="name-date text-center">
+                                <span>Exame {{exame.exame.tipo_exame}}</span>
+                                <span>{{exame.disponibilidade_exame.hora_disponivel.strftime("%H:%M")}}</span>
+                            </div>
+                            <div class="status-user mt-2">
+                                <!-- As classes pra usar aqui são pending(amarelo), canceled(cancelaada) e finished(finalizada) -->
+                                <span class="{{exame.status}}">{{exame.status}}</span>
+                            </div>
+                        </div>
+                    </a>
+                    <!-- Modal detalhes e ações exames -->
+                    <div class="modal fade" id="details{{exame.id_agenda_exame}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabelExames">Detalhes do agendamento:</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+    <!--                    <h5 class="fs-5">Você deseja prosseguir com o agendamento do encaminhamento abaixo:</h5>-->
+                            <p class="mb-1">Protocolo: {{exame.protocolo_exame}}</p>
+                            <p class="mb-1">Data: {{exame.disponibilidade_exame.data_disponivel.strftime("%d/%m/%Y")}}</p>
+                            <p class="mb-1">Horário: {{exame.disponibilidade_exame.hora_disponivel.strftime("%H:%M")}}</p>
+                            <p class="mb-1">Especialidade: Exame {{exame.exame.tipo_exame}}</p>
+                          </div>
+                          <div class="modal-footer">
+    <!--                          <form  method="POST">-->
+    <!--                            <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
+    <!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento=encaminhamento.id_encaminhamento">-->
+    <!--                          </form>-->
+                              {% if exame.status == "Pendente" %}
+                                <button type="button" class="op-good" name="cancel_button" data-bs-toggle="modal" data-bs-target="#delete{{exame.id_agenda_exame}}" >
+                                    Cancelar
+                                </button>
+                                <form method="post" action="{{ url_for('reagendar') }}" class="inline">
+                                    <input type="hidden" name="tipo_agendamento" value="exame">
+                                    <button type="submit" name="id_agendamento" value="{{exame.id_agenda_exame}}" class="op-good">
+                                        Reagendar
+                                    </button>
+                                </form>
+                              {% endif %}
+                              {% if exame.status == "Cancelado"%}
+                                <form method="post" action="{{ url_for('reagendar') }}" class="inline">
+                                    <input type="hidden" name="tipo_agendamento" value="exame">
+                                    <button type="submit" name="id_agendamento" value="{{exame.id_agenda_exame}}" class="op-good">
+                                        Reagendar
+                                    </button>
+                                </form>
+                              {% endif %}
+                              <button type="button" class="op-bad" data-bs-dismiss="modal">
+                                Voltar
+                              </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--     fim do Modal detalhes e ações exames    -->
+                    <!-- Modal confirmar cancelamento exame -->
+                    <div class="modal fade" id="delete{{exame.id_agenda_exame}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="staticBackdropLabelCancelamentoExame">Confirmação de cancelamento</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="modal-body">
+                            <p class="mb-1">Você tem certeza de que deseja cancelar este agendamento? Isso irá excluir o seu
+                                encaminhamento e você precisará retornar com seu médico para emissão de um novo encaminhamento.
+                            </p>
+                            <p>
+                                Caso não seja o que você deseja, utilize a opção de reagendar, se estiver disponível.
+                            </p>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="op-bad" data-bs-dismiss="modal">
+                                Voltar
+                            </button>
+                            <form method="post" action="{{ url_for('cancelar_agendamento') }}" class="inline">
+                                <input type="hidden" name="tipo_agendamento" value="exame">
+                                <button type="submit" name="id_agendamento" value="{{exame.id_agenda_exame}}" class="op-good">
+                                    Confirmar cancelamento
+                                </button>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!--     fim do Modal confirmar cancelamento exame   -->
+                {% endfor %}
+            </div>
+        </section>
+    </div>
+</body>
+</html>

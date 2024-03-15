@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>OHS - Listar pacientes</title>
     {% include 'includes/bootstrap.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 </head>
 <body>
     <header>
-        {% include 'includes/card_paciente.html' %}
+        {% include 'includes/card_medico.html' %}
     </header>
 
     <section class="services_area">
@@ -18,31 +18,27 @@
             {{ titulo }}
         </h2>
 
-        {% if not encaminhamentos %}
-            <h4 class="mt-5" style="color: #fff;">*** Não há encaminhamentos pendentes ***</h4>
+        {% if not agendamentos %}
+            <h4 class="mt-5" style="color: #fff;">*** Não há pacientes agendados ***</h4>
         {% endif %}
 
+
         <div class="list_users">
-            {% for encaminhamento in encaminhamentos %}
-                <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{encaminhamento.id_encaminhamento}}">
+            {% for agendamento in agendamentos %}
+                <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{agendamento.id_agendamento_consulta}}">
                     <div class="date-consult">
-                        <span id="date_list">{{ encaminhamento.tipo.tipo_encaminhamento }}</span>
-                        {% if encaminhamento.fk_id_medico %}
-                            <span id="day_list">{{encaminhamento.medico.especialidade}}</span>
-                        {% endif %}
-                        {% if encaminhamento.fk_id_exame %}
-                            <span id="day_list">{{encaminhamento.exame.tipo_exame}}</span>
-                        {% endif %}
+                        <span id="date_list">{{agendamento.disponibilidade_consulta.data_disponivel.strftime("%d/%m/%Y") }}</span>
+                        <span id="day_list">{{agendamento.disponibilidade_consulta.dia_semana}}</span>
                     </div>
                     <div class="user_more_info">
-                        <span>Protocolo: {{encaminhamento.protocolo_encaminhamento}}</span>
-                        <span>{{encaminhamento.medico.pronome_tratamento}} {{encaminhamento.medico.nome}}</span>
+                        <span>Paciente: {{agendamento.paciente.nome}}</span>
+                        <span>{{agendamento.disponibilidade_consulta.hora_disponivel.strftime("%H:%M")}}</span>
                         <!-- Usar como modelo e passar apenas os dados que precisa, no caso só um parametro pra e apagar o outro -->
                     </div>
                 </a>
 
                 <!-- Modal confirmar seleção encaminhamento -->
-                <div class="modal fade" id="confirmation{{encaminhamento.id_encaminhamento}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                <div class="modal fade" id="confirmation{{agendamento.id_agendamento_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                       <div class="modal-header">
@@ -51,15 +47,7 @@
                       </div>
                       <div class="modal-body">
 <!--                        <h5 class="fs-5">Você deseja prosseguir com o agendamento do encaminhamento abaixo:</h5>-->
-                        <p class="mb-1">Protocolo: {{encaminhamento.protocolo_encaminhamento}}</p>
-                        <p class="mb-1">Tipo: {{ encaminhamento.tipo.tipo_encaminhamento }}</p>
-                        {% if encaminhamento.fk_id_medico %}
-                            <p class="mb-1">Especialidade: {{encaminhamento.medico.especialidade}}</p>
-                            <p class="mb-1">Médico(a): {{encaminhamento.medico.pronome_tratamento}} {{encaminhamento.medico.nome}}</p>
-                        {% endif %}
-                        {% if encaminhamento.fk_id_exame %}
-                            <p class="mb-1">Descrição: {{encaminhamento.exame.tipo_exame}}</p>
-                        {% endif %}
+
 
 
 
@@ -67,13 +55,13 @@
                       <div class="modal-footer">
 <!--                          <form  method="POST">-->
 <!--                            <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
-<!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento={{encaminhamento.id_encaminhamento}}">-->
+<!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento=">-->
 <!--                          </form>-->
 
                           <form method="post" action="{{ url_for('selecionar_disponibilidade') }}" class="inline">
 <!--                              <input type="hidden" name="extra_submit_param" value="extra_submit_value">-->
                               <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
-                              <button type="submit" name="id_encaminhamento" value="{{encaminhamento.id_encaminhamento}}" class="op-good">
+                              <button type="submit" name="id_encaminhamento" value="" class="op-good">
                                 Prosseguir
                               </button>
                           </form>

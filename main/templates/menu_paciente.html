@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OHS - Menu Principal</title>
+    <title>OHS - Menu Paciente</title>
     {% include 'includes/bootstrap.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -11,41 +11,22 @@
 </head>
 <body>
     <header>
-        <div class="card">
-            <!-- Área das Info -->
-            <div class="infos">
-                <div class="user_img">
-                    <div class="img_test">
-
-                    </div>
-                </div>
-                <div class="user_info">
-                    <h2 class="mb-0">Anthony Pinho</h2>
-                    <p class="mb-0">Paciente - Carteira Digital</p>
-                    <p class="mb-0">12344556788</p>
-                </div>
-            </div>
-            <!-- Fim da Área das Info -->
-
-            <div class="footer_card">
-                <a href="#">Clique aqui para acessar seu perfil</a>
-            </div>
-        </div>
+        {% include 'includes/card_paciente.html' %}
     </header>
     <section class="services_area">
         <h2 id="title_service">O que você pretende fazer hoje?</h2>
         <div class="services">
-            <a href="{{ url_for('agendar_consulta') }}" class="option">
+            <a href="{{ url_for('agendar_clinico') }}" class="option">
                 <i class="bi bi-calendar-heart"></i>
                 <p>Agendar Consulta</p>
             </a>
 
-            <a href="{{ url_for('listar_encaminhamentos') }}" class="option">
+            <a href="{{ url_for('listar_encaminhamentos_pendentes') }}" class="option">
                 <i class="bi bi-journals"></i>
                 <p>Encaminhamentos</p>
             </a>
 
-            <a href="#" class="option">
+            <a href="{{ url_for('mostrar_agenda_paciente') }}" class="option">
                 <i class="bi bi-calendar3"></i>
                 <p>Minha Agenda</p>
             </a>
@@ -56,5 +37,112 @@
             </a>
         </div>
     </section>
+
+            <!--    Modal confirmação de agendamento     -->
+            <div class="modal fade" id="modal_confirmacao_agendamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title fs-4" id="exampleModalLabel">O agendamento foi realizado com sucesso!</h5><br>
+                        </div>
+                        <div class="modal-body">
+                            {% if medico %}
+                                <p class="mb-3 lead">Anote o seu protocolo!</p>
+                                <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
+                                <p class="mb-1">Data: {{disponibilidade.data_disponivel.strftime("%d/%m/%Y")}} - {{disponibilidade.dia_semana}}</p>
+                                <p class="mb-1">Horário: {{disponibilidade.hora_disponivel.strftime("%H:%M")}}</p>
+                                <p class="mb-1">Especialidade: {{medico.especialidade}}</p>
+                                <p class="mb-1">Medico: {{medico.pronome_tratamento}} {{medico.nome}}</p>
+                            {% endif %}
+                            {% if exame %}
+                                <p class="mb-3 lead">Anote o seu protocolo!</p>
+                                <p class="mb-1"><strong>Protocolo: {{protocolo}}</strong></p>
+                                <p class="mb-1">Data: {{disponibilidade.data_disponivel.strftime("%d/%m/%Y")}} - {{disponibilidade.dia_semana}}</p>
+                                <p class="mb-1">Horário: {{disponibilidade.hora_disponivel.strftime("%H:%M")}}</p>
+                                <p class="mb-1">Exame: {{exame}}</p>
+                            {% endif %}
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="op-good" data-bs-dismiss="modal">Fechar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--  fim modal confirmação agendamento   -->
+
+            <!-- Modal confirmação reversão agendamento -->
+            <div class="modal fade" id="modal_reagendamento" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabelReagendamento">
+                        O seu agendamento foi revertido com sucesso. Acesse o menu de Encaminhamentos ou Agendar Consulta para reagendar.
+                    </h1>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="op-bad" data-bs-dismiss="modal">
+                          Fechar
+                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--     fim do Modal confirmação reversão agendamento    -->
+
+            <!-- Modal confirmação cancelamento agendamento -->
+            <div class="modal fade" id="modal_cancelamento" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabelCancelamento">
+                        O seu agendamento foi cancelado com sucesso.
+                    </h1>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="op-bad" data-bs-dismiss="modal">
+                          Fechar
+                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--     fim do Modal confirmação reversão agendamento    -->
+
+
+            <!-- import jquery -->
+            <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+            <!-- Bootstrap Bundle with Popper -->
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+            <!--Modal JS Script -->
+            <script type="text/javascript">
+                let conf = {{ confirmacao|safe }};
+                if (conf == 1) {
+                window.onload = () => {
+                    $('#modal_confirmacao_agendamento').modal('show');
+                }
+                }
+            </script>
+
+            <script>
+                let conf = {{ reagendamento|safe }};
+                if (conf == 1) {
+                window.onload = () => {
+                    $('#modal_reagendamento').modal('show');
+                }
+                }
+            </script>
+
+            <script>
+                let conf = {{ cancelamento|safe }};
+                if (conf == 1) {
+                window.onload = () => {
+                    $('#modal_cancelamento').modal('show');
+                }
+                }
+            </script>
+
+
+
 </body>
 </html>

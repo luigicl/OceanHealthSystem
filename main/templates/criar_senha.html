@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criar senha</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+
+    <div class="content-criarsenha">
+        <div class="nav-buttons">
+            <a href="{{ url_for('home') }}">
+                <button class="btn-accept button" id="home">Home</button>
+            </a>
+            <a href="{{ url_for('logar') }}">
+                <button class="btn-cancel button" id="login">Login</button>
+            </a>
+        </div>
+        <div class="info-content">
+            <h1 id="title-login">Criar senha de acesso ao sistema OHS</h1>
+            <p class="instructions">É necessário ter realizado primeiramente o pré-cadastro na unidade de saúde e estar de posse do código de acesso fornecido.</p>
+        </div>
+        <div class="form-control">
+            <form method="POST" name="form_login">
+                <div class="form-group">
+                    {{ form.hidden_tag() }}
+                    {{ form.csrf_token }}
+                    {{ form.cpf.label }}
+                    {{ form.cpf(placeholder="digite apenas os números do cpf") }}
+                </div>
+                <div class="form-group">
+                    {{ form.access_key.label }}
+                    {{ form.access_key(placeholder="digite o código de acesso fornecido") }}
+                </div>
+                <div class="form-group">
+                    {{ form.password.label }}
+                    {{ form.password(placeholder="digite uma senha segura") }}
+                </div>
+                <div class="form-group">
+                    {{ form.confirmation.label }}
+                    {{ form.confirmation(placeholder="digite novamente a senha") }}
+                </div>
+                <div class="buttons">
+                    <a href="{{ url_for('home') }}">
+                        <button class="btn-cancel button" type="button" id="cancel">Cancelar</button>
+                    </a>
+                    {{form.submit(class="btn-accept button")}}
+                </div>
+
+            </form>
+
+        </div>
+        <div id="errors" class="errors">
+                    {% if form.cpf.errors %}
+                        {% for erro in form.cpf.errors %}
+                        <p style="color: red; font-weight: bold"> {{ erro }} </p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if form.access_key.errors %}
+                        {% for erro in form.access_key.errors %}
+                        <p style="color: red; font-weight: bold"> {{ erro }} </p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if form.password.errors %}
+                        {% for erro in form.password.errors %}
+                        <p style="color: red; font-weight: bold"> {{ erro }} </p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if form.confirmation.errors %}
+                        {% for erro in form.confirmation.errors %}
+                        <p style="color: red; font-weight: bold"> {{ erro }} </p>
+                        {% endfor %}
+                    {% endif %}
+
+                    {% if mensagem %}
+                        <p class="errors" style="color: red; font-weight: bold"> {{ mensagem }} </p>
+                    {% endif %}
+
+
+                </div>
+    </div>
+
+    <script>
+        <!--   ALTERNAR VISIBILIDADE DA SENHA     -->
+        window.addEventListener("load", function(){
+            var checkbox  = document.getElementById('cb-toggle-password');
+            var x = document.getElementById('senha');
+            checkbox.addEventListener('change', function() {
+                if(this.checked) {
+                    x.type = 'text';
+                } else {
+                    x.type = 'password';
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

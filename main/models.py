@@ -1,13 +1,19 @@
 """ ESTRTUTRA DO BANCO DE DADOS """
 
-from main import db
+from main import db, login_manager
+from flask_login import UserMixin
 from datetime import datetime
 from sqlalchemy.schema import Sequence
 
 
-# Cada classe representa uma tabela no BD
+# função obrigatória qdo se cria estrutura de login com flask_login/LoginManager
+@login_manager.user_loader
+def load_user(id_usuario):
+    return DimPaciente.query.get(int(id_usuario))
 
-class DimPaciente(db.Model):
+
+# Cada classe representa uma tabela no BD
+class DimPaciente(db.Model, UserMixin):
     _tablename_ = 'dim_paciente'
     id_paciente = db.Column(db.Integer, primary_key=True)
     cpf = db.Column(db.String(11), unique=True, nullable=False)
@@ -17,9 +23,14 @@ class DimPaciente(db.Model):
     email = db.Column(db.String(100), nullable=True)
     senha = db.Column(db.String(255), nullable=True)
     access_key = db.Column(db.String(255), nullable=True)
+    role = db.Column(db.String(10), default='paciente')
 
     def __repr__(self):
         return f"Paciente: {self.nome} - CPF {self.cpf}"
+
+    # Função necessária para sobrescrever a padrão, pois utilizamos "id_paciente" ao invés de somente "id"
+    def get_id(self):
+        return self.id_paciente
 
 
 class DimEnderecoPaciente(db.Model):
@@ -50,6 +61,7 @@ class DimMedico(db.Model):
     senha = db.Column(db.String(255), nullable=True)
     access_key = db.Column(db.String(255), nullable=True)
     especialidade = db.Column(db.String(100), nullable=False)
+    role = db.Column(db.String(10), default='medico')
 
     def __repr__(self):
         return f"<Medico>: {self.nome} - CPF {self.crm}"
@@ -91,6 +103,7 @@ class DimEncaminhamento(db.Model):
     fk_id_medico = db.Column(db.Integer, db.ForeignKey('dim_medico.id_medico'), nullable=True)
     fk_id_exame = db.Column(db.Integer, db.ForeignKey('dim_tipo_exame.id_exame'), nullable=True)
     protocolo_encaminhamento = db.Column(db.String, nullable=True)
+    protocolo_agendamento = db.Column(db.String, nullable=True)
     paciente = db.relationship('DimPaciente', backref=db.backref('encaminhamentos', lazy=True))
     medico = db.relationship('DimMedico', backref=db.backref('encaminhamentos', lazy=True))
     exame = db.relationship('DimTipoExame', backref=db.backref('encaminhamentos', lazy=True))
@@ -104,7 +117,7 @@ class DimEncaminhamento(db.Model):
 class DimDisponibilidadeExames(db.Model):
     _tablename_ = 'dim_disponibilidade_exames'
     id_disponibilidade_exame = db.Column(db.Integer, primary_key=True)
-    id_exame = db.Column(db.Integer, db.ForeignKey('dim_tipo_exame.id_exame'), nullable=False)
+    fk_id_exame = db.Column(db.Integer, db.ForeignKey('dim_tipo_exame.id_exame'), nullable=False)
     data_disponivel = db.Column(db.Date, nullable=False)
     dia_semana = db.Column(db.String(20), nullable=False)
     hora_disponivel = db.Column(db.Time, nullable=False)
@@ -119,15 +132,15 @@ class FatoAgendaExame(db.Model):
     fk_id_encaminhamento = db.Column(db.Integer, db.ForeignKey('dim_encaminhamento.id_encaminhamento'), nullable=False)
     fk_id_exame = db.Column(db.Integer, db.ForeignKey('dim_tipo_exame.id_exame'), nullable=False)
     fk_id_paciente = db.Column(db.Integer, db.ForeignKey('dim_paciente.id_paciente'), nullable=False)
-    fk_id_medico = db.Column(db.Integer, db.ForeignKey('dim_medico.id_medico'), nullable=False)
+    fk_id_medico = db.Column(db.Integer, db.ForeignKey('dim_medico.id_medico'), nullable=True)
     fk_id_disponibilidade_exame = db.Column(db.Integer, db.ForeignKey('dim_disponibilidade_exames.id_disponibilidade_exame'), nullable=False)
     protocolo_exame = db.Column(db.String, nullable=True)
     status = db.Column(db.String(20), nullable=False)
     encaminhamento = db.relationship('DimEncaminhamento', backref=db.backref('agendamentos_exame', lazy=True))
     exame = db.relationship('DimTipoExame')
-    paciente = db.relationship('DimPaciente')
+    paciente = db.relationship('DimPaciente', backref=db.backref('exames_agendados', lazy=True))
     medico = db.relationship('DimMedico')
-    disponibilidade_exame = db.relationship('DimDisponibilidadeExames', backref=db.backref('agendamentos_exame', lazy=True))
+    disponibilidade_exame = db.relationship('DimDisponibilidadeExames', backref=db.backref('disponibilidade_exame', lazy=True))
 
 
 # Modelo para Disponibilidade de Consultas
@@ -155,5 +168,5 @@ class FatoAgendaConsulta(db.Model):
     encaminhamento = db.relationship('DimEncaminhamento', backref=db.backref('consulta_agendada', lazy=True))
     medico = db.relationship('DimMedico', backref=db.backref('consultas_agendadas', lazy=True))
     paciente = db.relationship('DimPaciente', backref=db.backref('consultas_agendadas', lazy=True))
-    disponibilidade_consulta = db.relationship('DimDisponibilidadeConsultas', backref=db.backref('consulta_agendada', lazy=True))
+    disponibilidade_consulta = db.relationship('DimDisponibilidadeConsultas', backref=db.backref('disponibilidade_consulta', lazy=True))
 
