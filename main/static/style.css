@@ -505,6 +505,7 @@ header{
 
 .two-items{
     display: flex;
+    gap: 1rem;
 }
 
 .form-group{
