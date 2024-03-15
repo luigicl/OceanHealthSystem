@@ -16,4 +16,7 @@ Neste reposítório você terá acesso ao prototipo do projeto, com as principai
 + Felipe
 + Alexsandro Lemos dos Santos
 
+## Atenção: Leia antes de clonar
+Este projeto foi criado interamente com o uso do [PyCharm] e para facilitar sua vida
+
 
