@@ -39,7 +39,7 @@
     </section>
 
             <!--    Modal confirmação de agendamento     -->
-            <div class="modal fade" id="modal_confirmacao_agendamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"> <!-- Add this line to your code -->
+            <div class="modal fade" id="modal_confirmacao_agendamento" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -70,6 +70,44 @@
             </div>
             <!--  fim modal confirmação agendamento   -->
 
+            <!-- Modal confirmação reversão agendamento -->
+            <div class="modal fade" id="modal_reagendamento" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabelReagendamento">
+                        O seu agendamento foi revertido com sucesso. Acesse o menu de Encaminhamentos ou Agendar Consulta para reagendar.
+                    </h1>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="op-bad" data-bs-dismiss="modal">
+                          Fechar
+                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--     fim do Modal confirmação reversão agendamento    -->
+
+            <!-- Modal confirmação cancelamento agendamento -->
+            <div class="modal fade" id="modal_cancelamento" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+              <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabelCancelamento">
+                        O seu agendamento foi cancelado com sucesso.
+                    </h1>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="op-bad" data-bs-dismiss="modal">
+                          Fechar
+                      </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!--     fim do Modal confirmação reversão agendamento    -->
+
 
             <!-- import jquery -->
             <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -82,6 +120,24 @@
                 if (conf == 1) {
                 window.onload = () => {
                     $('#modal_confirmacao_agendamento').modal('show');
+                }
+                }
+            </script>
+
+            <script>
+                let conf = {{ reagendamento|safe }};
+                if (conf == 1) {
+                window.onload = () => {
+                    $('#modal_reagendamento').modal('show');
+                }
+                }
+            </script>
+
+            <script>
+                let conf = {{ cancelamento|safe }};
+                if (conf == 1) {
+                window.onload = () => {
+                    $('#modal_cancelamento').modal('show');
                 }
                 }
             </script>

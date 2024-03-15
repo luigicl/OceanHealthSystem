@@ -1,11 +1,9 @@
 from datetime import datetime
 from random import random, randrange, choice
-
 from sqlalchemy import desc
-
 from main import db, app, bcrypt
 from main.models import *
-from main.forms import ConsultaForm
+from main.forms import CreatePassword
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 from flask_login import login_required, login_user, logout_user, current_user
 
@@ -17,6 +15,7 @@ def home():
 
 @app.route("/cadastrar", methods=['GET', 'POST'])
 def cadastrar():
+    """ Criação de pré-cadastro na unidade de saúde e geração de código de acesso """
     # Apertado o botão de enviar cadastro
     if request.method == 'POST':
         nome = request.form.get('nome')
@@ -62,6 +61,25 @@ def cadastrar():
         #     mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
         #     return render_template("cadastrar.html", mensagem=mensagem)
     return render_template("cadastrar_new.html")
+
+
+@app.route("/criar_senha", methods=['GET', 'POST'])
+def criar_senha():
+    """ Criação de senha de acesso após pré-cadastro na unidade de saúde """
+    form_senha = CreatePassword()
+    if form_senha.validate_on_submit():
+        cpf = form_senha.cpf.data
+        access_key = form_senha.access_key.data
+        senha = bcrypt.generate_password_hash(form_senha.password.data)
+        usuario = DimPaciente.query.filter(DimPaciente.cpf == cpf).first()
+        if usuario:
+            if not usuario.senha:
+                usuario.senha = senha
+                db.session.commit()
+            else:
+                mensagem = "Esse usuário (CPF) já possui senha cadastrada, favor realizar seu login."
+                return render_template("criar_senha.html", form=form_senha, mensagem=mensagem)
+    return render_template("criar_senha.html", form=form_senha)
 
 
 @app.route("/login", methods=['GET', 'POST'])
@@ -132,7 +150,7 @@ def listar_encaminhamentos_pendentes():
                            )
 
 
-@app.route('/minha_agenda')
+@app.route('/minha_agenda', methods=['GET', 'POST'])
 def mostrar_agenda_paciente():
     id_paciente = current_user.id_paciente
     paciente = DimPaciente.query.get(id_paciente)
@@ -217,12 +235,10 @@ def agendamento_clinico():
 @app.route('/selecionar_disponibilidade', methods=['GET', 'POST'])
 def selecionar_disponibilidade():
     """ Listar a disponibilidade para agendamento de um encaminhamento """
-    print(request.method)
     if request.method == 'POST':
         id_encaminhamento = request.form.get("id_encaminhamento")
         print(id_encaminhamento)
         encaminhamento = DimEncaminhamento.query.get(id_encaminhamento)
-        id_tipo_encaminhamento = encaminhamento.fk_id_tipo_encaminhamento
         id_medico = encaminhamento.fk_id_medico
         id_exame = encaminhamento.fk_id_exame
         id_paciente = current_user.id_paciente
@@ -258,6 +274,66 @@ def selecionar_disponibilidade():
                                    titulo=titulo,
                                    paciente=paciente,
                                    id_encaminhamento=id_encaminhamento
+                                   )
+
+    return ("<h2 style='margin-top:40px; margin-left:20px;'>ERRO!<br><br>Esta página deve ser acessada exclusivamente "
+            "a partir do menu de encaminhamentos pendentes.</h2>")
+
+
+@app.route('/reagendar', methods=['GET', 'POST'])
+def reagendar():
+    """ Reverter um agendamento, disponibilizando o encaminhamento para remarcação """
+    if request.method == 'POST':
+        id_agendamento = request.form.get('id_agendamento')
+        tipo_agendamento = request.form.get('tipo_agendamento')
+
+        id_paciente = current_user.id_paciente
+        paciente = DimPaciente.query.get(id_paciente)
+
+        if tipo_agendamento == "consulta":
+            agendamento = FatoAgendaConsulta.query.get(id_agendamento)
+
+            if agendamento.fk_id_encaminhamento:
+                encaminhamento = DimEncaminhamento.query.get(agendamento.fk_id_encaminhamento)
+                encaminhamento.protocolo_agendamento = None
+                id_disponibilidade = agendamento.fk_id_disponibilidade_consulta
+                disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+                disponibilidade.status = None
+                db.session.delete(agendamento)
+                db.session.commit()
+
+                return render_template('menu_paciente.html',
+                                       paciente=paciente,
+                                       reagendamento=1
+                                       )
+            else:
+                id_disponibilidade = agendamento.fk_id_disponibilidade_consulta
+                disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+                disponibilidade.status = None
+                db.session.delete(agendamento)
+                db.session.commit()
+
+                # return redirect(url_for('mostrar_agenda_paciente', reagendamento=1))
+                return render_template('menu_paciente.html',
+                                       paciente=paciente,
+                                       reagendamento=1
+                                       )
+        if tipo_agendamento == "exame":
+            agendamento = FatoAgendaExame.query.get(id_agendamento)
+            print("agendamento", agendamento)
+            encaminhamento = DimEncaminhamento.query.get(agendamento.fk_id_encaminhamento)
+            print("encaminhamento", encaminhamento)
+            encaminhamento.protocolo_agendamento = None
+            id_disponibilidade = agendamento.fk_id_disponibilidade_exame
+            disponibilidade = DimDisponibilidadeExames.query.get(id_disponibilidade)
+            print("disponibilidade", disponibilidade)
+            disponibilidade.status = None
+            db.session.delete(agendamento)
+            db.session.commit()
+
+            return render_template('menu_paciente.html',
+                                   paciente=paciente,
+                                   reagendamento=1
                                    )
 
     return ("<h2 style='margin-top:40px; margin-left:20px;'>ERRO!<br><br>Esta página deve ser acessada exclusivamente "
@@ -430,9 +506,57 @@ def listar_pacientes():
                            )
 
 
-# @app.route('/listar-consultas')
-# def listar_consultas():
-#     return render_template('modelo_lista_pacientes_exames.html')
+@app.route('/cancelar_agendamento', methods=['GET', 'POST'])
+def cancelar_agendamento():
+    """ Cancela o agendamento, deixando o encaminhamento disponível para remarcação;
+        para consulta com clínico, o agendamento é apenas excluído"""
+    if request.method == 'POST':
+        id_agendamento = request.form.get('id_agendamento')
+        tipo_agendamento = request.form.get('tipo_agendamento')
+
+        id_paciente = current_user.id_paciente
+        paciente = DimPaciente.query.get(id_paciente)
+
+        if tipo_agendamento == "consulta":
+            agendamento = FatoAgendaConsulta.query.get(id_agendamento)
+
+            if agendamento.fk_id_encaminhamento:
+                encaminhamento = DimEncaminhamento.query.get(agendamento.fk_id_encaminhamento)
+                id_disponibilidade = agendamento.fk_id_disponibilidade_consulta
+                disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+                disponibilidade.status = None
+                db.session.delete(agendamento)
+                db.session.delete(encaminhamento)
+                db.session.commit()
+            else:
+                id_disponibilidade = agendamento.fk_id_disponibilidade_consulta
+                disponibilidade = DimDisponibilidadeConsultas.query.get(id_disponibilidade)
+                disponibilidade.status = None
+                db.session.delete(agendamento)
+                db.session.commit()
+
+            return render_template('menu_paciente.html',
+                                   paciente=paciente,
+                                   cancelamento=1
+                                   )
+
+        if tipo_agendamento == "exame":
+            agendamento = FatoAgendaExame.query.get(id_agendamento)
+            encaminhamento = DimEncaminhamento.query.get(agendamento.fk_id_encaminhamento)
+            id_disponibilidade = agendamento.fk_id_disponibilidade_exame
+            disponibilidade = DimDisponibilidadeExames.query.get(id_disponibilidade)
+            disponibilidade.status = None
+            db.session.delete(agendamento)
+            db.session.delete(encaminhamento)
+            db.session.commit()
+
+            return render_template('menu_paciente.html',
+                                   paciente=paciente,
+                                   cancelamento=1
+                                   )
+
+    return ("<h2 style='margin-top:40px; margin-left:20px;'>ERRO!<br><br>Esta página deve ser acessada exclusivamente "
+            "a partir da agenda do paciente.</h2>")
 
 
 # TESTE
