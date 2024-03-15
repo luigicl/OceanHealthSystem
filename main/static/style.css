@@ -503,6 +503,11 @@ header{
     display: none;
 }
 
+.two-items{
+    display: flex;
+    gap: 1rem;
+}
+
 .form-group{
     margin-top: 10px;
 }

@@ -135,12 +135,20 @@ def menu_principal_medico():
     return render_template("menu_medico.html", medico=medico)
 
 
+<<<<<<< HEAD
+@app.route('/mpaciente')
+=======
 @app.route('/menu_paciente')
 @login_required
+>>>>>>> d7315b94792d28024f38bec333a3706303094f29
 def menu_principal_paciente():
     id_paciente = current_user.id_paciente
     paciente = DimPaciente.query.get(id_paciente)
     return render_template('menu_paciente.html', paciente=paciente)
+
+@app.route('/rotateste')
+def rotateste():
+    return render_template("t3.html")
 
 
 @app.route('/menu_unidade')
