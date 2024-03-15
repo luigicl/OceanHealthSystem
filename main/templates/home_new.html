@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
-    <div class="content-login">
+    <div class="content-home">
         <div class="welcome-text">
             <h1>Bem-vindo ao sistema OHS</h1>
             <p class="option-text">Selecione uma opção</p>
@@ -42,9 +42,9 @@
         </div>
       </div>
     </div>
+    <!-- Fim modal de confirmação pré-cadastro na UBS -->
 
-
-    <!-- Modal de msg para realizar pré-cadastro-->
+    <!-- Modal de msg para realizar pré-cadastro  -->
     <div class="modal fade" id="modal_msg_ubs"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -58,5 +58,37 @@
         </div>
       </div>
     </div>
+    <!-- Fim modal de msg para realizar pré-cadastro  -->
+
+    <!-- Modal de confirmação de criação de senha  -->
+    <div class="modal fade" id="modal_conf_senha"  data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+          <div class="modal-body">
+            Sua senha foi cadastrada com sucesso. Faça login para acessar o OHS.
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn-accept button" data-bs-dismiss="modal">Fechar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Fim modal de confirmação de criação de senha  -->
+
+    <!-- import jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!--Modal JS Script -->
+    <script type="text/javascript">
+        let conf = {{ confirmacao|safe }};
+        if (conf == 1) {
+        window.onload = () => {
+            $('#modal_conf_senha').modal('show');
+        }
+        }
+    </script>
 </body>
 </html>

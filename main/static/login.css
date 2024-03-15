@@ -5,7 +5,7 @@
 }
 
 body {
-        height: 100vh;
+    height: 100vh;
     width: 100%;
     font-family: Arial, sans-serif;
     padding: 20px;
@@ -31,7 +31,35 @@ body {
     margin-top: 2rem;
 }
 
+.content-login{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    height: 100vh;
+    width: 70%;justify-content: flex-start;
+}
 
+.content-cadastro{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    height: 100vh;
+    width: 70%;
+    justify-content: flex-start;
+}
+.content-home{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2rem;
+    height: 100vh;
+    width: 70%;
+}
 
 .content-login{
     display: flex;
@@ -40,7 +68,7 @@ body {
     justify-content: center;
     gap: 2rem;
     height: 100vh;
-    width: 70%;
+    width: 50%;
 }
 
 .content-criarsenha{
@@ -50,32 +78,37 @@ body {
     justify-content: flex-start;
     gap: 1rem;
     height: 100vh;
-    width: 70%;
+    width: 60%;
 }
 #title-login{
     text-shadow: 0px 6px 10px rgba(255, 255, 255, .1);
 }
 
 .info-content{
-    margin-top: 4rem;
+    margin-top: 2rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 2rem;
+    gap: 1rem;
+}
+
+.instructions{
+    position: center;
+    text-align: justify;
 }
 
 .mandatory {
-    position: relative;
-    right: 18rem;
+    position: center;
     color: #599dc6;
 }
 
 .form-control{
     margin-top: 1rem;
-    width: 50%;
+    width: 70%;
     background-color: #245567;
     border: none;
+    color: #fff;
 }
 
 .form-group {
@@ -85,8 +118,12 @@ body {
     margin-bottom: 10px;
 }
 
+p{
+    margin-bottom: 0px;
+}
+
 label {
-    flex-basis: 35%;
+    flex-basis: 30%;
     text-align: left;
 }
 input[type="text"],
@@ -95,10 +132,11 @@ input[type="email"],
 input[type="password"],
 input[type="number"],
 input[type="tel"] {
-    flex-basis: 65%;
+    flex-basis: 70%;
     padding: 10px;
     border-radius: 15px;
     border: 1px solid #ccc;
+    height: 40px;
 }
 
 /* remover setas do input number */
@@ -197,11 +235,12 @@ input::-webkit-inner-spin-button {
     flex-direction: row;
     align-items: flex-start;
     gap: 2rem;
-    width: 70%;
+    width: 60%;
     align-content: center;
     justify-content: center;
     height: 50px;
     margin-top: 1rem;
+    margin-bottom: 4rem;
 }
 
 .errors{

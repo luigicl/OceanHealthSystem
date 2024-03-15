@@ -5,7 +5,6 @@ from flask_login import UserMixin
 from datetime import datetime
 from sqlalchemy.schema import Sequence
 
-
 # função obrigatória qdo se cria estrutura de login com flask_login/LoginManager
 @login_manager.user_loader
 def load_user(id_usuario):

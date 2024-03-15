@@ -12,17 +12,13 @@
     <header>
         {% include 'includes/card_medico.html' %}
     </header>
-
     <section class="services_area">
         <h2 class="mb-4" id="title_service">
             {{ titulo }}
         </h2>
-
         {% if not agendamentos %}
             <h4 class="mt-5" style="color: #fff;">*** Não há pacientes agendados ***</h4>
         {% endif %}
-
-
         <div class="list_users">
             {% for agendamento in agendamentos %}
                 <a href="" class="user_info_list" data-bs-toggle="modal" data-bs-target="#confirmation{{agendamento.id_agendamento_consulta}}">
@@ -33,10 +29,8 @@
                     <div class="user_more_info">
                         <span>Paciente: {{agendamento.paciente.nome}}</span>
                         <span>{{agendamento.disponibilidade_consulta.hora_disponivel.strftime("%H:%M")}}</span>
-                        <!-- Usar como modelo e passar apenas os dados que precisa, no caso só um parametro pra e apagar o outro -->
                     </div>
                 </a>
-
                 <!-- Modal confirmar seleção encaminhamento -->
                 <div class="modal fade" id="confirmation{{agendamento.id_agendamento_consulta}}" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
@@ -46,18 +40,8 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                       </div>
                       <div class="modal-body">
-<!--                        <h5 class="fs-5">Você deseja prosseguir com o agendamento do encaminhamento abaixo:</h5>-->
-
-
-
-
                       </div>
                       <div class="modal-footer">
-<!--                          <form  method="POST">-->
-<!--                            <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>-->
-<!--                            <input type="submit" class="op-good" value="Prosseguir" href="/agendar_encaminhamento?encaminhamento=">-->
-<!--                          </form>-->
-
                           <form method="post" action="{{ url_for('selecionar_disponibilidade') }}" class="inline">
 <!--                              <input type="hidden" name="extra_submit_param" value="extra_submit_value">-->
                               <button type="button" class="op-bad" data-bs-dismiss="modal">Cancelar</button>
@@ -65,13 +49,11 @@
                                 Prosseguir
                               </button>
                           </form>
-
                       </div>
                     </div>
                   </div>
                 </div>
                 <!--     fim do Modal     -->
-
             {% endfor%}
         </div>
     </section>

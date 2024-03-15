@@ -4,19 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro no OHS</title>
+    {% include 'includes/bootstrap.html' %}
     <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
 </head>
 <body>
-    <div class="content-login">
+    <div class="content-cadastro">
 
         <div class="info-content">
             <h1 id="title-login">Cadastro no sistema OHS</h1>
             <p class="instructions">Preencha os campos vazios abaixo com os seus dados e certifique-se de todos serem dados autênticos. Ao final, você receberá os dados de sua carteirinha de acesso.</p>
             <p class="mandatory">Os campos com * são obrigatórios!</p>
+            {% if mensagem %}
+                <p style="color: red; text-align: center;">{{mensagem}}</p>
+            {% endif %}
         </div>
     
         <div class="form-control">  
-            <form method="POST">
+            <form method="POST" action="{{ url_for('cadastrar') }}">
                 <div class="form-group">
                     <label for="nome">Nome completo <span class="required-star">*</span></label>
                     <input type="text" id="nome" name="nome" pattern="^[A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{3,}(?: [A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{2,})(?: [A-Za-záàâãéèêíïóôõöúüçñÁÀÂÃÉÈÍÏÓÔÕÖÚÜÇÑ']{1,}){0,20}$" placeholder="digite seu nome completo sem abreviação" required>
@@ -50,7 +54,7 @@
 
                 <div class="form-group">
                     <label for="numero">Número <span class="required-star">*</span></label>
-                    <input type="text" id="numero" name="numero" placeholder="..." required>
+                    <input type="text" id="numero" name="numero" placeholder="digite o número" required>
                 </div>
 
                 <div class="form-group">
@@ -58,12 +62,34 @@
                     <input type="text" id="complemento" name="complemento" placeholder="apartamento, bloco" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="bairro">Bairro <span class="required-star">*</span></label>
+                    <input type="text" id="bairro" name="bairro" placeholder="digite o bairro"required>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="cidade">Cidade <span class="required-star">*</span></label>
+                    <input type="text" id="cidade" name="cidade" placeholder="digite sua cidade, sem abreviações" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="estado">Estado (UF) <span class="required-star">*</span></label>
+                    <input type="text" id="estado" name="estado" placeholder="SP, MG, AM..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="cep">CEP <span class="required-star">*</span></label>
+                    <input type="text" id="cep" name="cep" placeholder="no padrão 00000-000"required>
+                </div>
+
                 <div class="buttons">
-                    <a href="{{ url_for('home') }}">
+                    <a href="{{ url_for('menu_principal_unidade') }}">
                         <button class="btn-cancel button" type="button" id="cancel">Cancelar</button>
                     </a>
                     <button class="btn-accept button" type="submit" id="accept">Enviar</button>
                 </div>
+
             </form>
         </div>
     </div>

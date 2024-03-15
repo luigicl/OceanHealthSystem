@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHS - Menu da Unidade de Saúde</title>
+    {% include 'includes/bootstrap.html' %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    <div class="">
+
+        <header>
+            {% include 'includes/card_admin.html' %}
+        </header>
+        <section class="services_area">
+            <h2 id="title_service">O que você pretende fazer hoje?</h2>
+            <div class="services">
+                <a href="{{ url_for('cadastrar') }}" class="option">
+                    <i class="bi bi-box-arrow-in-up-right"></i>
+                    <p>Cadastrar<br>Paciente</p>
+                </a>
+
+            </div>
+        </section>
+    </div>
+    <!--    Modal confirmação do cadastro     -->
+    <div class="modal fade" id="modal_confirmacao_cadastro" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fs-4" id="exampleModalLabel">O cadastro foi realizado com sucesso!</h5><br>
+                </div>
+                <div class="modal-body">
+                        <p class="mb-3 lead">Informe a chave de acesso ao paciente!</p>
+                        <p class="mb-1"><strong>Chave de acesso: {{access_key}}</strong></p>
+                        <p class="mb-1">Nome: {{nome}}</p>
+                        <p class="mb-1">CPF: {{cpf}}</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-accept" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--  fim modal confirmação do cadastro   -->
+
+     <!-- import jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Bootstrap Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+    <!--Modal JS Script -->
+    <script type="text/javascript">
+        let conf = {{ sucesso|safe }};
+        if (conf == 1) {
+        window.onload = () => {
+            $('#modal_confirmacao_cadastro').modal('show');
+        }
+        }
+    </script>
+</body>
+</html>

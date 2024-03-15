@@ -1,6 +1,5 @@
-from datetime import datetime
 from random import random, randrange, choice
-from sqlalchemy import desc
+import secrets
 from main import db, app, bcrypt
 from main.models import *
 from main.forms import CreatePassword
@@ -16,50 +15,73 @@ def home():
 @app.route("/cadastrar", methods=['GET', 'POST'])
 def cadastrar():
     """ Criação de pré-cadastro na unidade de saúde e geração de código de acesso """
-    # Apertado o botão de enviar cadastro
     if request.method == 'POST':
         nome = request.form.get('nome')
         cpf = request.form.get('cpf')
-        data_nascimento = request.form.get('dataNascimento')
-        print(data_nascimento)
-        celular = request.form.get('celular')
+        data_nascimento = request.form.get('data_nascimento')
+        telefone = request.form.get('telefone')
         email = request.form.get('email')
-        data_cadastro = datetime.now().strftime("%d/%m/%Y às %H:%M:%S")
-        # Para a tela de confirmação
-        dados_usuario = {
-            'nome': nome,
-            'cpf': cpf,
-            'data_nascimento': data_nascimento,
-            'celular': celular,
-            'email': email,
-            'data': data_cadastro
-        }
+        logradouro = request.form.get('logradouro')
+        numero = request.form.get('numero')
+        complemento = request.form.get('complemento')
+        bairro = request.form.get('bairro')
+        cidade = request.form.get('cidade')
+        estado = request.form.get('estado')
+        cep = request.form.get('cep')
+        access_key = gerar_access_key()
 
-        # Validar o CPF digitado - ******* REVISAR, POIS O MODELS FOI ALTERADO ********
+        data_nascimento_objeto = datetime.strptime(data_nascimento, '%Y-%m-%d').date()
+
+        # Validar o CPF digitado
+        # *** ATIVAR SOMENTE EM PRODUÇÃO, PARA EVITAR DE TER QUE UTILIZAR CPF VÁLIDOS EM AMBIENTE DE DESENVOLVIMENTO ***
         # if validar_cpf(cpf):
-        #     # VERIFICAR SE JÁ EXISTE CADASTRO COM O CPF INFORMADO
-        #     if Usuarios.query.filter(Usuarios.cpf == cpf).first():
-        #         mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
-        #         return render_template("cadastrar.html", mensagem=mensagem)
-        #     elif validar_data_nascimento(data_nascimento):
-        #         usuario = Usuarios(
-        #             nome=nome,
-        #             cpf=cpf,
-        #             data_nascimento=data_nascimento,
-        #             celular=celular,
-        #             email=email,
-        #             data_cadastro=data_cadastro,
-        #             paciente=True
-        #         )
-        #         db.session.add(usuario)
-        #         db.session.commit()
-        #         return render_template("confirmacao_cadastro.html", dados_usuario=dados_usuario)
-        #     else:
-        #         mensagem = f"Verifique a data de nascimento inserida."
-        #         return render_template("cadastrar.html", mensagem=mensagem)
+
+        if DimPaciente.query.filter(DimPaciente.cpf == cpf).first():
+            mensagem = f"CPF ({cpf}) já cadastrado. Verifique o número digitado ou faça login."
+            return render_template("cadastrar_new.html", mensagem=mensagem)
+        elif validar_data_nascimento(data_nascimento):
+            paciente = DimPaciente(
+                cpf=cpf,
+                nome=nome,
+                data_nascimento=data_nascimento_objeto,
+                telefone=telefone,
+                email=email,
+                access_key=access_key
+            )
+            db.session.add(paciente)
+            db.session.commit()
+
+            id_novo_paciente = paciente.id_paciente
+
+            endereco = DimEnderecoPaciente(
+                fk_id_paciente=id_novo_paciente,
+                logradouro=logradouro,
+                numero=numero,
+                complemento=complemento,
+                bairro=bairro,
+                cidade=cidade,
+                estado=estado,
+                cep=cep
+            )
+
+            db.session.add(endereco)
+            db.session.commit()
+
+            return render_template("menu_admin.html",
+                                   sucesso=1,
+                                   nome=nome,
+                                   cpf=cpf,
+                                   access_key=access_key
+                                   )
+        else:
+            mensagem = f"Verifique a data de nascimento inserida."
+            return render_template("cadastrar_new.html", mensagem=mensagem)
+
+        # *** ATIVAR SOMENTE EM PRODUÇÃO, PARA EVITAR DE TER QUE UTILIZAR CPF VÁLIDOS EM AMBIENTE DE DESENVOLVIMENTO ***
         # else:
         #     mensagem = f"Verifique o CPF digitado ({cpf}) e tente novamente."
         #     return render_template("cadastrar.html", mensagem=mensagem)
+
     return render_template("cadastrar_new.html")
 
 
@@ -74,8 +96,13 @@ def criar_senha():
         usuario = DimPaciente.query.filter(DimPaciente.cpf == cpf).first()
         if usuario:
             if not usuario.senha:
-                usuario.senha = senha
-                db.session.commit()
+                if usuario.access_key == access_key:
+                    usuario.senha = senha
+                    db.session.commit()
+                    return render_template("home_new.html", confirmacao=1)
+                else:
+                    mensagem = "A chave de acesso inserida não confere, favor verificar e tentar novamente."
+                    return render_template("criar_senha.html", form=form_senha, mensagem=mensagem)
             else:
                 mensagem = "Esse usuário (CPF) já possui senha cadastrada, favor realizar seu login."
                 return render_template("criar_senha.html", form=form_senha, mensagem=mensagem)
@@ -88,7 +115,6 @@ def logar():
         cpf = request.form.get('cpf')
         senha = request.form.get('senha')
         paciente = DimPaciente.query.filter(DimPaciente.cpf == cpf).first()
-        print(paciente)
         if paciente and bcrypt.check_password_hash(paciente.senha, senha):
             login_user(paciente)
             return redirect(url_for("menu_principal_paciente", id_usuario=paciente.id_paciente))
@@ -117,6 +143,12 @@ def menu_principal_paciente():
     return render_template('menu_paciente.html', paciente=paciente)
 
 
+@app.route('/menu_unidade')
+@login_required
+def menu_principal_unidade():
+    return render_template('menu_admin.html')
+
+
 # noinspection PyComparisonWithNone
 @app.route('/encaminhamentos', methods=['GET', 'POST'])
 def listar_encaminhamentos_pendentes():
@@ -128,18 +160,6 @@ def listar_encaminhamentos_pendentes():
                        .filter(DimEncaminhamento.protocolo_agendamento == None)
                        .all()
                        )
-    # exames = (
-    #     DimEncaminhamento.query
-    #     .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
-    #     .filter(DimEncaminhamento.fk_id_exame != None)
-    #     .all()
-    # )
-    # consultas = (
-    #     DimEncaminhamento.query
-    #     .filter(DimEncaminhamento.fk_id_paciente == id_paciente)
-    #     .filter(DimEncaminhamento.fk_id_medico != None)
-    #     .all()
-    # )
     titulo = "Lista de encaminhamentos pendentes"
     return render_template("listar_encaminhamentos.html",
                            # exames=exames,
@@ -188,8 +208,7 @@ def agendar_clinico():
                                )  # .filter() não aceita "is None"
     medico = DimMedico.query.get(app.config["ID_CLINICO_GERAL"])
     titulo = "Disponbilidade para consulta com"
-    # for i in disponibilidade_clinico:
-    # print(i.data_disponivel.strftime("%d/%m/%Y"), i.hora_disponivel.strftime("%H:%M"))
+
     return render_template("agendar_consulta.html",
                            disponibilidade_clinico=disponibilidade_clinico,
                            medico=medico,
@@ -237,7 +256,6 @@ def selecionar_disponibilidade():
     """ Listar a disponibilidade para agendamento de um encaminhamento """
     if request.method == 'POST':
         id_encaminhamento = request.form.get("id_encaminhamento")
-        print(id_encaminhamento)
         encaminhamento = DimEncaminhamento.query.get(id_encaminhamento)
         id_medico = encaminhamento.fk_id_medico
         id_exame = encaminhamento.fk_id_exame
@@ -320,13 +338,10 @@ def reagendar():
                                        )
         if tipo_agendamento == "exame":
             agendamento = FatoAgendaExame.query.get(id_agendamento)
-            print("agendamento", agendamento)
             encaminhamento = DimEncaminhamento.query.get(agendamento.fk_id_encaminhamento)
-            print("encaminhamento", encaminhamento)
             encaminhamento.protocolo_agendamento = None
             id_disponibilidade = agendamento.fk_id_disponibilidade_exame
             disponibilidade = DimDisponibilidadeExames.query.get(id_disponibilidade)
-            print("disponibilidade", disponibilidade)
             disponibilidade.status = None
             db.session.delete(agendamento)
             db.session.commit()
@@ -344,7 +359,6 @@ def reagendar():
 def agendar_encaminhamento():
     """ Realiza a gravação do agendamento de um encaminhamento no BD e exibe a confirmação para o usuário """
     id_encaminhamento = request.form.get("id_encaminhamento")
-    print("id encaminhamentoo: " + id_encaminhamento)
     id_disponibilidade = request.form.get("id_disponibilidade")
     tipo_agendamento = request.form.get("tipo_agendamento")
     id_paciente = current_user.id_paciente
@@ -559,90 +573,6 @@ def cancelar_agendamento():
             "a partir da agenda do paciente.</h2>")
 
 
-# TESTE
-@app.route('/teste_gerar_encaminhamento', methods=['GET', 'POST'])
-def teste_gerar_encaminhamento():
-    exames = DimTipoExame.query.all()
-    medicos = DimMedico.query.filter(DimMedico.especialidade != "Clínico Geral").all()
-    pacientes = DimPaciente.query.order_by(DimPaciente.nome).all()
-    if request.method == 'POST':
-        tipo_encaminhamento = request.form.get('rb_tipo_encaminhamento')
-        exame = request.form.get('input_tipo_exame')
-        medico = request.form.get('input_especialidade')
-        paciente = request.form.get('input_paciente')
-        protocolo = gerar_protocolo('encaminhamento')
-        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_CONSULTA"]:
-            encaminhamento = DimEncaminhamento(
-                fk_id_tipo_encaminhamento=tipo_encaminhamento,
-                fk_id_paciente=paciente,
-                fk_id_medico=medico,
-                protocolo_encaminhamento=protocolo
-            )
-            db.session.add(encaminhamento)
-            db.session.commit()
-
-            encaminhamento_gerado = {
-                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
-                "nome_paciente": DimPaciente.query.get(paciente).nome,
-                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
-                "nome_medico": DimMedico.query.get(medico).nome,
-                "especialidade": DimMedico.query.get(medico).especialidade,
-                "protocolo": protocolo
-            }
-            return render_template("teste_confirmacao_encaminhamento.html",
-                                   encaminhamento=encaminhamento_gerado
-                                   )
-
-        if tipo_encaminhamento == app.config["ID_ENCAMINHAMENTO_EXAME"]:
-            encaminhamento = DimEncaminhamento(
-                fk_id_tipo_encaminhamento=tipo_encaminhamento,
-                fk_id_paciente=paciente,
-                fk_id_exame=exame,
-                protocolo_encaminhamento=protocolo
-            )
-            db.session.add(encaminhamento)
-            db.session.commit()
-
-            encaminhamento_gerado = {
-                "tipo": DimTipoEncaminhamento.query.get(tipo_encaminhamento).tipo_encaminhamento,
-                "nome_paciente": DimPaciente.query.get(paciente).nome,
-                "cpf_paciente": DimPaciente.query.get(paciente).cpf,
-                "exame": DimTipoExame.query.get(exame).tipo_exame,
-                "protocolo": protocolo
-            }
-            return render_template("teste_confirmacao_encaminhamento.html",
-                                   encaminhamento=encaminhamento_gerado
-                                   )
-
-    return render_template("teste_gerar_encaminhamento.html",
-                           exames=exames,
-                           medicos=medicos,
-                           pacientes=pacientes
-                           )
-
-
-# TESTE
-@app.route('/listar_encaminhamentos', methods=['GET', 'POST'])
-def teste_listar_encaminhamentos():
-    pacientes = DimPaciente.query.order_by(DimPaciente.nome).all()
-    if request.method == 'POST':
-        id_paciente = request.form.get('input_paciente')
-        paciente = DimPaciente.query.get(id_paciente)
-        exames = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(
-            DimEncaminhamento.fk_id_exame != None).all()
-        consultas = DimEncaminhamento.query.filter(DimEncaminhamento.fk_id_paciente == id_paciente).filter(
-            DimEncaminhamento.fk_id_medico != None).all()
-        return render_template("teste_listar_encaminhamentos.html",
-                               pacientes=pacientes,
-                               exames=exames,
-                               consultas=consultas,
-                               paciente=paciente
-                               )
-    return render_template("teste_listar_encaminhamentos.html",
-                           pacientes=pacientes
-                           )
-
-
 def gerar_protocolo(tipo):
     def gerar_numero():
         numero = randrange(111111111, 999999999)
@@ -668,6 +598,10 @@ def gerar_protocolo(tipo):
             numero = gerar_numero()
         protocolo = "X" + str(numero)
         return protocolo
+
+
+def gerar_access_key(length=4):
+    return secrets.token_hex(length)
 
 
 def validar_cpf(cpf):
@@ -718,61 +652,3 @@ def validar_data_nascimento(data_nascimento):
         return True
     else:
         return False
-
-
-@app.route('/teste')
-def teste():
-    # Consulta para obter consultas e exames do paciente especificado
-    consultas = FatoAgendaConsulta.query.filter_by(fk_id_paciente=1).all()
-    exames = FatoAgendaExame.query.filter_by(fk_id_paciente=1).all()
-
-    # Lista para armazenar resultados
-    result = []
-
-    # Itera sobre as consultas e exames obtidos
-    for consulta in consultas:
-        result.append({
-            'tipo': 'consulta',
-            'id': consulta.id_agendamento_consulta,  # Substitua pelo nome da coluna adequada se necessário
-            # Outros campos específicos da consulta
-        })
-
-    for exame in exames:
-        result.append({
-            'tipo': 'exame',
-            'id': exame.id_agenda_exame,  # Substitua pelo nome da coluna adequada se necessário
-            # Outros campos específicos do exame
-        })
-
-    return jsonify(result)
-# # TESTE CALENDÁRIO
-# @app.route('/agendar', methods=['GET', 'POST'])
-# def agendar():
-#     form = ConsultaForm()
-#     if form.validate_on_submit():
-#         nova_consulta = Consulta(titulo=form.titulo.data_disponivel, inicio=form.inicio.data_disponivel, fim=form.fim.data_disponivel, url=form.url.data_disponivel)
-#         db.session.add(nova_consulta)
-#         db.session.commit()
-#         return redirect(url_for('calendario'))
-#     return render_template('teste_agendar.html', form=form)
-#
-#
-# # TESTE CALENDÁRIO
-# @app.route('/api/eventos')
-# def eventos():
-#     consultas = Consulta.query.all()
-#     eventos = []
-#     for consulta in consultas:
-#         eventos.append({
-#             "title": consulta.titulo,
-#             "start": consulta.inicio.strftime("%Y-%m-%dT%H:%M:%S"),
-#             "end": consulta.fim.strftime("%Y-%m-%dT%H:%M:%S"),
-#             "url": consulta.url
-#         })
-#     return jsonify(eventos)
-#
-#
-# # TESTE CALENDÁRIO
-# @app.route('/calendario')
-# def calendario():
-#     return render_template('calendario.html')

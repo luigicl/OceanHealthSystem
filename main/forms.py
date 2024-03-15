@@ -20,19 +20,3 @@ class CreatePassword(FlaskForm):
                                      EqualTo('password', message='As senhas devem ser iguais'),
                                  ])
     submit = SubmitField('Registrar')
-
-# TESTE CALENDÁRIO
-# class ConsultaForm(FlaskForm):
-#     titulo = StringField('Título', validators=[DataRequired()])
-#     inicio = DateTimeField('Início', format='%Y-%m-%d %H:%M:%S', validators=[DataRequired()])
-#     fim = DateTimeField('Fim', format='%Y-%m-%d %H:%M:%S', validators=[DataRequired()])
-#     url = StringField('URL', validators=[DataRequired()])
-#     submit = SubmitField('Agendar')
-
-
-# class CriarEncaminhamento(FlaskForm):
-#     titulo = StringField('Título', validators=[DataRequired()])
-#     inicio = DateTimeField('Início', format='%Y-%m-%d %H:%M:%S', validators=[DataRequired()])
-#     fim = DateTimeField('Fim', format='%Y-%m-%d %H:%M:%S', validators=[DataRequired()])
-#     url = StringField('URL', validators=[DataRequired()])
-#     submit = SubmitField('Agendar')
