@@ -16,7 +16,13 @@ Neste reposítório você terá acesso ao prototipo do projeto, com as principai
 + Felipe
 + Alexsandro Lemos dos Santos
 
-## Atenção: Leia antes de clonar
-Este projeto foi criado interamente com o uso do [PyCharm] e para facilitar sua vida
+## Recomendações para rodar o sistema
+Recomendamos o uso do ambiente de desenvolvimento Pycharm, visto que o projeto foi desenvolvido nele.
+O uso do sistema em outras IDE's necessitam de extensões/configurações específicas que não serão cobertas neste repositório.
+
+## Pré-requisitos
+* [Versão Python 3.10 Security](https://www.python.org/downloads/)
+* [Baixar e Instalar o PyCharm Community Edition](https://www.jetbrains.com/pt-br/pycharm/download/?section=windows)
+
 
 
