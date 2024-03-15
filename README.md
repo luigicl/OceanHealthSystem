@@ -9,5 +9,11 @@ Conheça mais sobre a Ocean [clique aqui!](https://oceanbrasil.com)
 Nosso objetivo do projeto foi a criação de um sistema de consultas/exames para sistemas de saúde em geral. O intuito é a desburocratização de agendamentos, agilizando e facilitando a vida de pacientes. 
 Neste reposítório você terá acesso ao prototipo do projeto, com as principais funcionalidades planejadas.
 
+## Membros desenvolvedores
++ Lucas da Rocha Andrade
++ Luigi da Costo Longo
++ Anthony
++ Felipe
++ Alexsandro Lemos dos Santos
 
 
