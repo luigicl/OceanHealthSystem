@@ -17,7 +17,7 @@ Neste reposítório você terá acesso ao prototipo do projeto, com as principai
 + Alexsandro Lemos dos Santos
 
 ## Documentação e Estruturação de projeto
-[Miro](![image](https://github.com/luigicl/OceanHealthSystem/assets/100856355/fbef85fa-c9ef-458f-b048-d751abf00e4d)
+[Miro](https://miro.com/app/board/uXjVN1YxRlM=/?share_link_id=905160819337)
 [Notion](https://www.notion.so/Sistema-acess-vel-de-agendamento-de-consultas-exames-a7f00a8e132e4283b11368dd1cc27f8c?pvs=4)
 
 ## Recomendações para rodar o sistema
