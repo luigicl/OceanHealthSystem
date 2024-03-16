@@ -29,4 +29,13 @@ O uso do sistema em outras IDE's necessitam de extensões/configurações espec�
 * [Baixar e Instalar o PyCharm Community Edition](https://www.jetbrains.com/pt-br/pycharm/download/?section=windows)
 
 ## Passos para rodar o projeto no pycharm
++ Criar ambiente virtual na pasta de projeto.
++ Configurar o interpretador para o local da pasta.
++ Instalar as dependências a partir do requirements.txt
++ Rodar o programa e ser feliz
+
+## Observações gerais
++ Acesse o menu de médico diretamente através da rota: http://127.0.0.1:5000/menu_medico
++ Acesse o menu de cadastro diretamente através da rota: http://127.0.0.1:5000/menu_unidade
+
 
