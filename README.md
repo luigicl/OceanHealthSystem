@@ -12,8 +12,8 @@ Neste reposítório você terá acesso ao prototipo do projeto, com as principai
 ## Membros desenvolvedores
 + Lucas da Rocha Andrade
 + Luigi da Costo Longo
-+ Anthony
-+ Felipe
++ Anthony de Pinho Martins
++ Felipe Francisco Bentes de Araujo
 + Alexsandro Lemos dos Santos
 
 ## Recomendações para rodar o sistema
