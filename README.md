@@ -10,11 +10,11 @@ Nosso objetivo do projeto foi a criação de um sistema de consultas/exames para
 Neste reposítório você terá acesso ao prototipo do projeto, com as principais funcionalidades planejadas.
 
 ## Membros desenvolvedores
-+ Lucas da Rocha Andrade
-+ Luigi da Costo Longo
++ Alexsandro Lemos dos Santos
 + Anthony de Pinho Martins
 + Felipe Francisco Bentes de Araujo
-+ Alexsandro Lemos dos Santos
++ Lucas da Rocha Andrade
++ Luigi da Costo Longo
 
 ## Documentação e Estruturação de projeto
 Estrutura geral: [Miro](https://miro.com/app/board/uXjVN1YxRlM=/?share_link_id=905160819337)<br>
