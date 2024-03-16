@@ -38,6 +38,9 @@
                     <input type="submit" class="btn-accept button" id="accept" value="Entrar">
                 </div>
             </form>
+            {% if mensagem %}
+                <p style="color: red; text-align: center;">{{mensagem}}</p>
+            {% endif %}
         </div>
     </div>
 
