@@ -6,7 +6,7 @@ O Ocean Tech School tem como objetivo capacitar seus alunos para o desenvolvimen
 Conheça mais sobre a Ocean [clique aqui!](https://oceanbrasil.com)
 
 ## Nosso projeto
-Nosso objetivo do projeto foi a criação de um sistema de consultas/exames para sistemas de saúde em geral. O intuito é a desburocratização de agendamentos, com uma interface simplificada e acessível à pessoas que não possuem intimidade com tecnologia, agilizando e facilitando a vida dos usuários.<br> 
+Nosso objetivo do projeto foi a criação de um sistema de consultas/exames para sistemas de saúde em geral. O intuito é a desburocratização de agendamentos, com uma interface simplificada e acessível à pessoas que não possuem intimidade com tecnologia, agilizando e facilitando a vida dos usuários.<br><br>
 Neste reposítório você terá acesso ao prototipo do projeto, com as principais funcionalidades planejadas.
 
 ## Membros desenvolvedores
