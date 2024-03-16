@@ -28,5 +28,5 @@ O uso do sistema em outras IDE's necessitam de extensões/configurações espec�
 * [Versão Python 3.10 Security](https://www.python.org/downloads/)
 * [Baixar e Instalar o PyCharm Community Edition](https://www.jetbrains.com/pt-br/pycharm/download/?section=windows)
 
-
+## Passos para rodar o projeto no pycharm
 
