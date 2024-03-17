@@ -429,7 +429,7 @@ def cancelar_agendamento():
 
 @app.route("/menu_medico")
 def menu_principal_medico():
-    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    id_medico = 1
     medico = DimMedico.query.get(id_medico)
     return render_template("menu_medico.html", medico=medico)
 
@@ -441,7 +441,7 @@ def gerar_encaminhamento():
     medicos = DimMedico.query.filter(DimMedico.especialidade != "Clínico Geral").all()
     pacientes = DimPaciente.query.order_by(DimPaciente.nome).all()
 
-    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    id_medico = 1
     medico = DimMedico.query.get(id_medico)
 
     if request.method == 'POST':
@@ -508,7 +508,7 @@ def gerar_encaminhamento():
 @app.route('/listar_pacientes', methods=['GET', 'POST'])
 def listar_pacientes():
     """ Lista os pacientes agendados com determinado médico """
-    id_medico = choice([1, 2, 3, 4, 5, 6, 7])
+    id_medico = 1
     pacientes_agendados = (db.session.query(FatoAgendaConsulta)
                            .join(FatoAgendaConsulta.disponibilidade_consulta)
                            .order_by(DimDisponibilidadeConsultas.data_disponivel)
